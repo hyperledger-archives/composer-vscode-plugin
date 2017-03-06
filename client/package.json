@@ -1,7 +1,7 @@
 {
   "name": "composer-support-client",
   "displayName": "Fabric Composer Verifier",
-  "description": "Fabric Composer Verifier",
+  "description": "Fabric Composer Verifier for client",
   "author": "Fenglian Xu",
   "license": "Apache",
   "version": "0.0.12",
