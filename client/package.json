@@ -5,7 +5,7 @@
   "author": "Fenglian Xu",
   "license": "Apache",
   "version": "0.0.12",
-  "publisher": "IBM",
+  "publisher": "FabricComposer",
   "icon": "icon.png",
   "engines": {
     "vscode": "^1.8.0"
