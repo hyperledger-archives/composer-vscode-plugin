@@ -3,7 +3,7 @@
   "description": "Composer Verifier Server",
   "version": "0.0.2",
   "author": "Fenglian Xu",
-  "publisher": "IBM",
+  "publisher": "FabricComposer",
   "license": "Apache",
   "engines": {
     "node": "*"
