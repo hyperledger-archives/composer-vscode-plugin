@@ -1,10 +1,10 @@
 {
   "name": "composer-support-client",
-  "displayName": "Fabric Composer Verifier",
-  "description": "Fabric Composer Verifier for client",
+  "displayName": "Fabric Composer",
+  "description": "Fabric Composer syntax highlighting, autocomplete & error checking",
   "author": "Fenglian Xu",
   "license": "Apache",
-  "version": "0.0.12",
+  "version": "0.5.0",
   "publisher": "FabricComposer",
   "icon": "icon.png",
   "engines": {

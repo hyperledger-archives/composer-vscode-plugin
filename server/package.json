@@ -1,7 +1,7 @@
 {
   "name": "composer-support-server",
-  "description": "Composer Verifier Server",
-  "version": "0.0.2",
+  "description": "Composer server",
+  "version": "0.5.0",
   "author": "Fenglian Xu",
   "publisher": "FabricComposer",
   "license": "Apache",
