@@ -4,14 +4,11 @@ node_js:
 dist: trusty
 install: |
     date
-        travis_wait 30 ./.travis/install.sh
+        travis_wait 10 ./.travis/install.sh
     date
-script: ./.travis/script.sh
 deploy:
     provider: script
     script: ./.travis/deploy.sh
     skip_cleanup: true
 cache: false
 sudo: required
-
-
