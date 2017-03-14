@@ -4,10 +4,8 @@
 set -ev
 set -o pipefail
 
-echo "preinstall server dependencies"
 cd ./server
 npm install
 
-echo "preinstall client dependencies..."
 cd ../client
 npm install
