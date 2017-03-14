@@ -4,7 +4,7 @@
 set -ev
 set -o pipefail
 
-echo "preinstall server dependencies..."
+echo "preinstall server dependencies"
 cd ./server
 npm install
 echo "compile server component..."
