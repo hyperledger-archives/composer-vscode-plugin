@@ -4,11 +4,9 @@ node_js:
 dist: trusty
 install: |
         travis_wait 3 ./.travis/build.sh
-script:
-  - npm test --silent
 deploy:
     provider: script
     script: ./.travis/deploy.sh
     skip_cleanup: true
 cache: false
-sudo: false
+sudo: required
