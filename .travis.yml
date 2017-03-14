@@ -3,7 +3,9 @@ node_js:
     - '6'
 dist: trusty
 install: |
-        travis_wait 3 ./.travis/build.sh
+        travis_wait 3 ./.travis/install.sh
+script: |
+      ./.travis/script.sh
 deploy:
     provider: script
     script: ./.travis/deploy.sh
