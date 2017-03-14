@@ -3,14 +3,12 @@ node_js:
     - '6'
 dist: trusty
 install: |
-    date
-        travis_wait 3 ./.travis/build.sh
-    date
-script: - npm test --silent
-
+        travis_wait 3 ./.travis/install.sh
+script: |
+      ./.travis/script.sh
 deploy:
     provider: script
     script: ./.travis/deploy.sh
     skip_cleanup: true
 cache: false
-sudo: false
+sudo: required
