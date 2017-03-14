@@ -77,6 +77,7 @@
     "vscode:prepublish": "tsc -p ./",
     "compile": "tsc -watch -p ./",
     "update-vscode": "node ./node_modules/vscode/bin/install",
+    "test": "node ./node_modules/vscode/bin/test",
     "postinstall": "node ./node_modules/vscode/bin/install",
     "package": "node ./node_modules/vsce/out/vsce package"
   },
