@@ -9,7 +9,8 @@ if [ "${TRAVIS_NODE_VERSION}" != "" -a "${TRAVIS_NODE_VERSION}" != "6"]; then
   echo Not executing as not running primary node.js version
   exit 0
 fi
-
+echo Start to install vsce
+echo "${VSCETOKEN}"
 # Push the code to npm there there is a travis tag defined
 if [ "${TRAVIS_TAG}" != ""]; then
 
