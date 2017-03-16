@@ -12,8 +12,7 @@ fi
 echo Start to install vsce
 echo "${VSCETOKEN}"
 # Push the code to npm there there is a travis tag defined
-if [ "${TRAVIS_TAG}" != ""]; then
-
+if [ "${TRAVIS_TAG}" != "" ]; then
    echo "${TRAVIS_TAG}"
   # Check  vsce installed
   npm install -g vsce
