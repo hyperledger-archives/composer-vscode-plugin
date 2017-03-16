@@ -7,9 +7,7 @@ set -o pipefail
 cd ./server
 npm run compile
 
-
 cd ../client
 
 npm run package
 npm test
-echo "build successfully!"

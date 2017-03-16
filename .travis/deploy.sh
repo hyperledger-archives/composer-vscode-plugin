@@ -13,11 +13,12 @@ fi
 # Push the code to npm there there is a travis tag defined
 if [ "${TRAVIS_TAG}" != ""]; then
 
+   echo "${TRAVIS_TAG}"
   # Check  vsce installed
   npm install -g vsce
 
   # publish to the VSCode marketplace using VSCETOKEN
 
   vsce publish -p "${VSCETOKEN}"
-
+  echo Successfully published the publishing
 fi
