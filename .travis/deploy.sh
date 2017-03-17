@@ -14,8 +14,8 @@ if [ "${TRAVIS_NODE_VERSION}" != "" -a "${TRAVIS_NODE_VERSION}" != "6" ]; then
   exit 0
 fi
 echo Start to install vsce
-echo "${VSCETOKEN}"
-echo "${TRAVIS_TAG}"
+echo ${VSCETOKEN}
+echo ${TRAVIS_TAG}
 # Push the code to npm there there is a travis tag defined
 if [ "${TRAVIS_TAG}" != "" ]; then
   # Check  vsce installed
