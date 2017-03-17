@@ -10,4 +10,3 @@ npm run compile
 cd ../client
 
 npm run package
-npm test
