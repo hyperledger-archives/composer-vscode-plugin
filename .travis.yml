@@ -7,12 +7,7 @@ install: |
 script: |
       ./.travis/script.sh
 deploy:
-  - provider: releases
-      api_key: ayq7zvsxc641sfna65njkik1x9y25b
-      file_glob: true
-      file: "*.vsix"
-      skip_cleanup: true
-  - provider: script
+     provider: script
      script: ./.travis/deploy.sh
      skip_cleanup: true
      on:
