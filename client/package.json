@@ -4,7 +4,7 @@
   "description": "Fabric Composer syntax highlighting, autocomplete & error checking",
   "author": "Fenglian Xu",
   "license": "Apache",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "publisher": "FabricComposer",
   "icon": "icon.png",
   "engines": {
