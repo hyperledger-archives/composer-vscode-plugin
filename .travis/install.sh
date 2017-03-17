@@ -9,3 +9,4 @@ npm install
 
 cd ../client
 npm install
+npm install -g vsce

@@ -10,4 +10,5 @@ npm run compile
 cd ../client
 
 npm run package
-npm test
+
+npm test 2>&1 | tee
