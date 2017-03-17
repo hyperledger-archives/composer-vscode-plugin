@@ -14,12 +14,9 @@ if [ "${TRAVIS_NODE_VERSION}" != "" -a "${TRAVIS_NODE_VERSION}" != "6" ]; then
   exit 0
 fi
 
-npm install -g vsce
 
 # Push the code to npm there there is a travis tag defined
 if [ "${TRAVIS_TAG}" != "" ]; then
-  # Check  vsce installed
-  #npm install -g vsce
 
   # publish to the VSCode marketplace using VSCETOKEN
   vsce publish -p "${VSCETOKEN}"
