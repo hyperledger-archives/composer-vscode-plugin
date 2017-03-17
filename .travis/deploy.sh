@@ -4,8 +4,12 @@
 set -ev
 set -o pipefail
 
+# Grab the current root directory
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
+cd ${DIR}/client
+
 # check that this is the right node.js version
-if [ "${TRAVIS_NODE_VERSION}" != "" -a "${TRAVIS_NODE_VERSION}" != "6"]; then
+if [ "${TRAVIS_NODE_VERSION}" != "" -a "${TRAVIS_NODE_VERSION}" != "6" ]; then
   echo Not executing as not running primary node.js version
   exit 0
 fi
@@ -13,7 +17,7 @@ echo Start to install vsce
 echo "${VSCETOKEN}"
 echo "${TRAVIS_TAG}"
 # Push the code to npm there there is a travis tag defined
-if [ "${TRAVIS_TAG}" != "" ]; then 
+if [ "${TRAVIS_TAG}" != "" ]; then
   # Check  vsce installed
   npm install -g vsce
 
