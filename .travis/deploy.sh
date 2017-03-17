@@ -13,16 +13,15 @@ if [ "${TRAVIS_NODE_VERSION}" != "" -a "${TRAVIS_NODE_VERSION}" != "6" ]; then
   echo Not executing as not running primary node.js version
   exit 0
 fi
-echo Start to install vsce
-echo ${VSCETOKEN}
-echo ${TRAVIS_TAG}
+
+npm install -g vsce
+
 # Push the code to npm there there is a travis tag defined
 if [ "${TRAVIS_TAG}" != "" ]; then
   # Check  vsce installed
-  npm install -g vsce
+  #npm install -g vsce
 
   # publish to the VSCode marketplace using VSCETOKEN
-
   vsce publish -p "${VSCETOKEN}"
-  echo Successfully published the publishing
 fi
+echo Successfully published the publishing
