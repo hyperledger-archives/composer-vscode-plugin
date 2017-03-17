@@ -19,6 +19,6 @@ fi
 if [ "${TRAVIS_TAG}" != "" ]; then
 
   # publish to the VSCode marketplace using VSCETOKEN
-  vsce publish -p "${VSCETOKEN}"
+  vsce publish -p ${VSCETOKEN}
 fi
 echo Successfully published the publishing

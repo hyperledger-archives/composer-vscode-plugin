@@ -10,5 +10,6 @@ npm run compile
 cd ../client
 
 npm run package
+npm install -g vsce
 
 npm test 2>&1 | tee
