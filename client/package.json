@@ -78,7 +78,8 @@
     "compile": "tsc -watch -p ./",
     "update-vscode": "node ./node_modules/vscode/bin/install",
     "postinstall": "node ./node_modules/vscode/bin/install",
-    "package": "node ./node_modules/vsce/out/vsce package"
+    "package": "node ./node_modules/vsce/out/vsce package",
+    "test": ""
   },
   "devDependencies": {
     "@types/mocha": "^2.2.33",
