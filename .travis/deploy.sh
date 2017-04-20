@@ -14,6 +14,12 @@ if [ "${TRAVIS_NODE_VERSION}" != "" -a "${TRAVIS_NODE_VERSION}" != "6" ]; then
   exit 0
 fi
 
+# Check that this is the main repository.
+if [[ "${TRAVIS_REPO_SLUG}" != hyperledger* ]]; then
+    echo "Skipping deploy; wrong repository slug."
+    exit 0
+fi
+
 # Push the code to npm there there is a travis tag defined
 if [ "${TRAVIS_TAG}" != "" ]; then
 
