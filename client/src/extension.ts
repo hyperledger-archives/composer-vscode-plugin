@@ -36,7 +36,7 @@ export function activate(context: ExtensionContext) {
   }
 
   // Create the language client and start the client.
-  let client = new LanguageClient('Fabric Composer', serverOptions, clientOptions);
+  let client = new LanguageClient('Hyperledger Composer', serverOptions, clientOptions);
   let disposable = client.start();
 
   // Push the disposable to the context's subscriptions so that the 

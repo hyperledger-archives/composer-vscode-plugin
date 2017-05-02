@@ -1,6 +1,6 @@
 {
 	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
-	"name": "JavaScript (with React and Fabric-Composer support)",
+	"name": "JavaScript (with React and Hyperledger-Composer support)",
 	"scopeName": "source.composer",
 	"fileTypes": [
 		".cto"
