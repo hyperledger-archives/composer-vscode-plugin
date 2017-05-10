@@ -57,7 +57,7 @@
 		},
 	  "composer-declaration": {
 			"name": "keyword.control.flow.composer",
-			"match": "\\b(asset|transaction|participant|enum|concept)\\b",
+			"match": "\\b(asset|transaction|participant|enum|concept|event)\\b",
 			"patterns": []
 		},
 		"composer-abstract-type": {
