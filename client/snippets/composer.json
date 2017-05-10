@@ -26,6 +26,15 @@
 		],
 		"description": "Composer Transaction"
 	},
+  "event": {
+		"prefix": "event",
+		"body": [
+			"event ${1:eventName} identified by ${2:eventKey} {",
+			"\to String ${2}$0",
+			"}"
+		],
+		"description": "Composer Event"
+	},
 	"concept": {
 		"prefix": "concept",
 		"body": [
