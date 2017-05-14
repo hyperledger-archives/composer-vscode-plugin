@@ -26,7 +26,7 @@ export function activate(context: ExtensionContext) {
   // Options to control the composer validator client
   let clientOptions: LanguageClientOptions = {
     // Register the server for composer documents
-    documentSelector: ['composer'],
+    documentSelector: ['composer','composer-acl'],
     synchronize: {
       // Synchronize the setting section 'Composer' to the server
       configurationSection: 'composer',
@@ -48,16 +48,9 @@ export function activate(context: ExtensionContext) {
       return;
     }
 
-    if (editor.document.languageId != "composer") {
+    if ((editor.document.languageId != "composer") && (editor.document.languageId != "composer-acl")) {
       return;
     }
-
-    //as a test set composer files to "2 spaces, no tabs""
-    editor.options = {
-      cursorStyle: editor.options.cursorStyle,
-      insertSpaces: true,
-      tabSize: 2,
-    };
 
     //For now, force an update when the editor is changed and a new one is selected.
     //This allows us to update properly in the event of referential integrity changes between files.

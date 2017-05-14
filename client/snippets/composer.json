@@ -1,5 +1,5 @@
 {
-  "asset": {
+  "Asset": {
 		"prefix": "asset",
 		"body": [
 			"asset ${1:assetName} identified by ${2:assetKey} {",
@@ -8,7 +8,7 @@
 		],
 		"description": "Composer Asset"
 	},
-	"participant": {
+	"Participant": {
 		"prefix": "participant",
 		"body": [
 			"participant ${1:participantName} identified by ${2:participantKey} {",
@@ -17,7 +17,7 @@
 		],
 		"description": "Composer Participant"
 	},
-	"transaction": {
+	"Transaction": {
 		"prefix": "transaction",
 		"body": [
 			"transaction ${1:transactionName} identified by ${2:transactionKey} {",
@@ -26,7 +26,7 @@
 		],
 		"description": "Composer Transaction"
 	},
-  "event": {
+  "Event": {
 		"prefix": "event",
 		"body": [
 			"event ${1:eventName} identified by ${2:eventKey} {",
@@ -35,7 +35,7 @@
 		],
 		"description": "Composer Event"
 	},
-	"concept": {
+	"Concept": {
 		"prefix": "concept",
 		"body": [
 			"concept ${1:conceptName} {",
@@ -44,7 +44,7 @@
 		],
 		"description": "Composer Concept"
 	},
-	"enum": {
+	"Enum": {
 		"prefix": "enum",
 		"body": [
 			"enum ${1:enumName} {",

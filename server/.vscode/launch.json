@@ -8,7 +8,8 @@
 			"request": "attach",
 			"port": 6009,
 			"sourceMaps": true,
-			"outFiles": [ "${workspaceRoot}/../client/server/**/*.js" ]
+			"outFiles": [ "${workspaceRoot}/../client/server/**/*.js" ],
+			"protocol": "legacy"
 		}
 	]
 }
