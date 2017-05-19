@@ -1,0 +1,29 @@
+{
+  "SimpleRule": {
+		"prefix": "Simple ACL Rule",
+		"body": [
+			"rule ${1:ruleName} {",
+			"\tdescription: \"${2:Description of the ACL rule}\"",
+			"\tparticipant: \"${3:org.acme.SampleParticipant}\"",
+			"\toperation: ${4:ALL | CREATE | READ | UPDATE | DELETE}",
+			"\tresource: \"${5:org.acme.SampeAsset}\"",
+			"\taction: ${6:ALLOW | DENY}$0",
+			"}"
+		],
+		"description": "Simple Composer ACL Rule"
+	},
+	"ConditionalRule": {
+		"prefix": "Conditional ACL Rule",
+		"body": [
+			"rule ${1:ruleName} {",
+			"\tdescription: \"${2:Description of the ACL rule}\"",
+			"\tparticipant(${3:p}): \"${4:org.acme.SampleParticipant}\"",
+			"\toperation: ${5:ALL | CREATE | READ | UPDATE | DELETE}",
+			"\tresource(${6:r}): \"${7:org.acme.SampeAsset}\"",
+			"\tcondition: ($3 == $6)",
+			"\taction: ${8:ALLOW | DENY}$0",
+			"}"
+		],
+		"description": "Conditional Composer ACL Rule"
+	}
+}

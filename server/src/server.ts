@@ -12,9 +12,11 @@ import {
 	CompletionItem, CompletionItemKind
 } from 'vscode-languageserver';
 
-// Create a new Composer model manager to handle all open cto documents in the workspace.
-const ModelManager = require('composer-common').ModelManager;
+import { ModelManager, AclManager, AclFile } from 'composer-common';
+
+//create the two main singleton managers we need to handle all open cto and permissions.acl documents in the workspace.
 let modelManager = new ModelManager();
+let aclManager = new AclManager(modelManager);
 
 // Create a connection for the server. The connection uses Node's IPC as a transport
 let connection: IConnection = createConnection(new IPCMessageReader(process), new IPCMessageWriter(process));
@@ -36,7 +38,7 @@ connection.onInitialize((params): InitializeResult => {
 			// Tell the client that the server works in FULL text document sync mode
 			textDocumentSync: documents.syncKind,
 			// Tell the client that the server support code complete
-			// Note: disabled for now as snipits in the client are better, until the parser can
+			// Note: disabled for now as snippets in the client are better, until the parser can
 			// parse char by char or line by line rather than whole doc at once
 			// completionProvider: {
 			//   resolveProvider: false
@@ -74,70 +76,161 @@ connection.onDidChangeConfiguration((change) => {
 	documents.all().forEach(validateTextDocument);
 });
 
+/**
+ * Main method driven by the LSP when the user opens or changes a cto or acl file
+ * @param {string} textDocument - ".cto" or "permissions.acl" document from the client to validate
+ */
 function validateTextDocument(textDocument: TextDocument): void {
-	let diagnostics: Diagnostic[] = [];
+	let langId = textDocument.languageId; //type of file we are processing
+	//note - this is the FULL document text as we can't do incremental yet! 
+	let txt = textDocument.getText();
 
-	var curLine   = 0; //vscode lines are 0 based.
-	var curColumn = 0; //vscode columns are 0 based
-	var endLine   = textDocument.lineCount; //default to highlighting to the end of document
-	var endColumn = Number.MAX_VALUE //default to highlighting to the end of the line
-	try {
-		//note - this is the FULL document text as we can't do incremental yet! 
-		var txt = textDocument.getText();
-		if (txt != null && txt.length > 0) {
-			//only add files with data
-			modelManager.addModelFile(txt);
-			//if we get here, everything is good
-		}
-	} catch (err) {
-		//extract Line and Column info
-		var fullMsg = err.name + ": " + err.message;
-		//connection.console.log(fullMsg); //debug assist
-		var finalMsg = fullMsg;
+	//only add files with data
+	if (txt != null && txt.length > 0) {
+		//different behaviour for each language type
+		if (langId == "composer-acl") {
+			//permissions.acl file
+			validateNewAclModelFile(textDocument);
+		} else {
+			//raw composer file
+			validateCtoModelFile(textDocument);
 
-		//some messages do not have a line and column
-		if(typeof err.getFileLocation === "function") { 
-			//genuine composer exception
-			var location = err.getFileLocation();
-			//we will take the default if we have no location
-			if(location) {
-			  curLine   = location.start.line-1; //Composer errors are 1 based
-			  endLine   = location.end.line-1;
-			  curColumn = location.start.column-1; //Composer errors are 1 based
-			  endColumn = location.end.column-1;
-			}
-	  } else {
-			//possible composer exception
-      var index = fullMsg.lastIndexOf(". Line "); 
-			if (index != -1) { 
-				//manually pull out what we can.
-				finalMsg = fullMsg.substr(0, index + 1); 
-				var current = fullMsg.substr(index + 7); //step over ". Line "   
-				curLine = parseInt(current, 10) - 1; //Composer errors are 1 based 
-				if (isNaN(curLine) || curLine < 0) { curLine = 0; } //sanity check 
-				endLine = curLine; //in the normal case only highlight the current line 
-				index = current.lastIndexOf(" column "); 
-				current = current.substr(index + 8); //step over " column " 
-				curColumn = parseInt(current, 10) - 1; //Composer errors are 1 based 
-				if (isNaN(curColumn) || curColumn < 0) { curColumn = 0; } //sanity check 
-				endColumn = curColumn; //set to the same to highlight the current word 
+			//if we have an acl file we should revalidate it incase the model changes broke something
+			const aclFile = aclManager.getAclFile();
+			if (aclFile != null) {
+				validateExistingAclModelFile(aclFile);
 			}
 		}
-
-		//build the message to send back to the client 
-		diagnostics.push({
-			severity: DiagnosticSeverity.Error,
-			range: {
-				start: { line: curLine, character: curColumn },
-				end: { line: endLine, character: endColumn }
-			},
-			code: err.name,
-			message: finalMsg,
-			source: 'Composer'
-		});
 	}
-	// Send the computed diagnostics to VSCode.
-	connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
+
+}
+
+/**
+ * Validates a cto file that the user has just opened or changed in the workspace.
+ * @param {string} textDocument - ".cto" file to validate
+ * @private
+ */
+function validateCtoModelFile(textDocument: TextDocument): void {
+	try {
+		let txt = textDocument.getText(); //*.cto file
+		modelManager.addModelFile(txt); //may throw an exception
+		sendDiagnosticSuccess(textDocument.uri); //all OK
+	} catch (err) {
+		buildAndSendDiagnosticFromException(err, textDocument.lineCount, textDocument.uri);
+	}
+}
+
+/**
+ * Validates an acl file that the user has just opened or changed in the workspace.
+ * @param {string} textDocument - new "permissions.acl" file to validate
+ * @private
+ */
+function validateNewAclModelFile(textDocument: TextDocument): void {
+	try {
+		let txt = textDocument.getText(); //permissions.acl file
+		let aclFile = aclManager.createAclFile(textDocument.uri, txt);
+		aclFile.lineCount = textDocument.lineCount; //store the count so future errors have access
+		aclManager.setAclFile(aclFile); //may throw an exception
+		sendDiagnosticSuccess(textDocument.uri); //all OK
+	} catch (err) {
+		buildAndSendDiagnosticFromException(err, textDocument.lineCount, textDocument.uri);
+	}
+}
+
+/**
+ * Validates the existing acl file that the user has open in the workspace.
+ * note that currently there can only be one acl file per business network definition
+ * @param {string} textDocument - existing "permissions.acl" file to validate
+ * @private
+ */
+function validateExistingAclModelFile(aclFile): void {
+	try {
+		aclFile.validate(); //may throw an exception
+		sendDiagnosticSuccess(aclFile.getIdentifier()); //all OK
+	} catch (err) {
+		buildAndSendDiagnosticFromException(err, aclFile.lineCount, aclFile.getIdentifier());
+	}
+}
+
+/**
+ * Turns the 'err' exception into a diagnostic message that it sends back to the client.
+ * @param {excepion} err - current validation exception
+ * @param {number} lineCount - number of lines in the invalid document
+ * @param {string} sourceURI - internal url for the invalid document
+ * @private
+ */
+function buildAndSendDiagnosticFromException(err, lineCount: number, sourceURI: string): void {
+	let diagnostics: Diagnostic[] = [];
+	let curLine = 0; //vscode lines are 0 based.
+	let curColumn = 0; //vscode columns are 0 based
+	let endLine = lineCount; //default to highlighting to the end of document
+	let endColumn = Number.MAX_VALUE //default to highlighting to the end of the line
+
+	//extract Line and Column info
+	let fullMsg = err.name + ": " + err.message;
+	//connection.console.log(fullMsg); //debug assist
+	let finalMsg = fullMsg;
+
+	//some messages do not have a line and column
+	if (typeof err.getFileLocation === "function") {
+		//genuine composer exception
+		let location = err.getFileLocation();
+		//we will take the default if we have no location
+		if (location) {
+			curLine = location.start.line - 1; //Composer errors are 1 based
+			endLine = location.end.line - 1;
+			curColumn = location.start.column - 1; //Composer errors are 1 based
+			endColumn = location.end.column - 1;
+		}
+	} else {
+		//possible composer exception
+		let index = fullMsg.lastIndexOf(". Line ");
+		if (index != -1) {
+			//manually pull out what we can.
+			finalMsg = fullMsg.substr(0, index + 1);
+			let current = fullMsg.substr(index + 7); //step over ". Line "   
+			curLine = parseInt(current, 10) - 1; //Composer errors are 1 based 
+			if (isNaN(curLine) || curLine < 0) { curLine = 0; } //sanity check 
+			endLine = curLine; //in the normal case only highlight the current line 
+			index = current.lastIndexOf(" column ");
+			current = current.substr(index + 8); //step over " column " 
+			curColumn = parseInt(current, 10) - 1; //Composer errors are 1 based 
+			if (isNaN(curColumn) || curColumn < 0) { curColumn = 0; } //sanity check 
+			endColumn = curColumn; //set to the same to highlight the current word 
+		}
+	}
+
+	//build the message to send back to the client 
+	diagnostics.push({
+		severity: DiagnosticSeverity.Error,
+		range: {
+			start: { line: curLine, character: curColumn },
+			end: { line: endLine, character: endColumn }
+		},
+		code: err.name,
+		message: finalMsg,
+		source: 'Composer'
+	});
+
+
+	// Send the computed diagnostics to VSCode. This must always be sent because:
+	// 1: If there has been an exception, this will report the details (this case).
+	// 2: If there has NOT been an exception, this will clear any previous exception details.
+	connection.sendDiagnostics({ uri: sourceURI, diagnostics });
+}
+
+/**
+ * Sends back a successful diagnostics message for the sourceURI document
+ * to clear any outstanding errors against this file in the client
+ * @param {string} sourceURI - internal url for the valid document
+ * @private
+ */
+function sendDiagnosticSuccess(sourceURI: string): void {
+	let diagnostics: Diagnostic[] = [];
+	// Send the computed diagnostics to VSCode. This must always be sent because:
+	// 1: If there has been an exception, this will report the details.
+	// 2: If there has NOT been an exception, this will clear any previous exception details (this case).
+	connection.sendDiagnostics({ uri: sourceURI, diagnostics });
 }
 
 connection.onDidChangeWatchedFiles((change) => {

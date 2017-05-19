@@ -4,7 +4,7 @@
   "description": "Hyperledger Composer syntax highlighting, autocomplete, snippets & error checking",
   "author": "Hyperledger Composer",
   "license": "Apache-2.0",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "publisher": "HyperledgerComposer",
   "icon": "icon.png",
   "engines": {
@@ -24,6 +24,22 @@
   ],
   "main": "./out/src/extension",
   "contributes": {
+    "configurationDefaults": {
+      "[composer]": {
+        "editor.wordWrap": "on",
+        "editor.quickSuggestions": true,
+        "editor.insertSpaces": true,
+        "editor.tabSize": 2,
+        "editor.snippetSuggestions": "top"
+      },
+      "[composer-acl]": {
+        "editor.wordWrap": "on",
+        "editor.quickSuggestions": true,
+        "editor.insertSpaces": true,
+        "editor.tabSize": 2,
+        "editor.snippetSuggestions": "top"
+      }
+    },
     "configuration": {
       "type": "object",
       "title": "Composer configuration",
@@ -55,7 +71,17 @@
         "extensions": [
           ".cto"
         ],
-        "configuration": "./language-configuration.json"
+        "configuration": "./composer.language-configuration.json"
+      },
+      {
+        "id": "composer-acl",
+        "aliases": [
+          "Hyperledger Composer ACL"
+        ],
+        "extensions": [
+          "permissions.acl"
+        ],
+        "configuration": "./composer-acl.language-configuration.json"
       }
     ],
     "grammars": [
@@ -63,15 +89,23 @@
         "language": "composer",
         "scopeName": "source.composer",
         "path": "./syntaxes/composer.tmLanguage.json"
+      },
+      {
+        "language": "composer-acl",
+        "scopeName": "source.composer.acl",
+        "path": "./syntaxes/composer-acl.tmLanguage.json"
       }
     ],
     "snippets": [
       {
         "language": "composer",
         "path": "./snippets/composer.json"
+      },
+      {
+        "language": "composer-acl",
+        "path": "./snippets/composer-acl.json"
       }
     ]
-
   },
   "scripts": {
     "vscode:prepublish": "tsc -p ./",
