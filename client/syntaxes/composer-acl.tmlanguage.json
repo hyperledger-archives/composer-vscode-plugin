@@ -1,0 +1,234 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Hyperledger Composer ACL Support",
+  "displayName": "Hyperledger Composer ACL",
+  "scopeName": "source.composer.acl",
+  "fileTypes": [
+    "permissions.acl"
+  ],
+  "uuid": "805375ec-d614-41f5-8993-5843fe63ea77",
+  "patterns": [
+    {
+      "include": "#statements"
+    }
+  ],
+  "repository": {
+    "statements": {
+      "patterns": [
+        {
+          "include": "#rule"
+        },
+        {
+          "include": "#comment"
+        },
+        {
+          "include": "#object"
+        }
+      ]
+    },
+    "rule": {
+      "name": "keyword.control.flow.composer-acl",
+      "match": "\\b(rule)\\b(.*)\\b",
+      "captures": {
+        "1": {
+          "name": "keyword.control.flow.composer-acl"
+        },
+        "2": {
+          "name": "variable.other.readwrite.composer-acl"
+        }
+      },
+      "patterns": []
+    },
+    "object": {
+      "begin": "\\{",
+      "beginCaptures": [
+        {
+          "name": "punctuation.definition.dictionary.begin.composer-acl"
+        }
+      ],
+      "end": "\\}",
+      "endCaptures": [
+        {
+          "name": "punctuation.definition.dictionary.end.composer-acl"
+        }
+      ],
+      "name": "meta.structure.dictionary.composer-acl",
+      "patterns": [
+        {
+          "comment": "the composer-acl object key",
+          "include": "#objectkey"
+        },
+        {
+          "include": "#comments"
+        },
+        {
+          "begin": ":",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.separator.dictionary.key-value.composer-acl"
+            }
+          },
+          "end": "(,)|(?=\\})",
+          "endCaptures": {
+            "1": {
+              "name": "punctuation.separator.dictionary.pair.composer-acl"
+            }
+          },
+          "name": "meta.structure.dictionary.value.composer-acl",
+          "patterns": [
+            {
+              "comment": "the composer-acl object value",
+              "include": "#value"
+            }
+          ]
+        },
+        {
+          "match": "[^\\s\\}]",
+          "name": "invalid.illegal.expected-dictionary-separator.composer-acl"
+        }
+      ]
+    },
+    "objectkey": {
+      "patterns": [
+        {
+          "include": "#definition"
+        },
+        {
+          "include": "#embeddedJS"
+        }
+      ]
+    },
+    "string": {
+      "begin": "\"",
+      "beginCaptures": [
+        {
+          "name": "punctuation.definition.string.begin.composer-acl"
+        }
+      ],
+      "end": "\"",
+      "endCaptures": [
+        {
+          "name": "punctuation.definition.string.composer-acl"
+        }
+      ],
+      "name": "string.quoted.double.composer-acl",
+      "patterns": []
+    },
+    "definition": {
+      "name": "storage.type.property.composer-acl",
+      "patterns": [
+        {
+          "include": "#simpleDefinitions"
+        },
+        {
+          "include": "#complexDefinitions"
+        }
+      ]
+    },
+    "simpleDefinitions": {
+      "match": "\\b(description|operation|action)\\b",
+      "name": "storage.type.property.composer-acl",
+      "patterns": []
+    },
+    "complexDefinitions": {
+      "match": "\\b(participant|resource|condition)\\b",
+      "name": "storage.type.property.composer-acl",
+      "patterns": []
+    },
+    "value": {
+      "patterns": [
+        {
+          "include": "#comment"
+        },
+        {
+          "include": "#definition"
+        },
+        {
+          "include": "#string"
+        },
+        {
+          "include": "#constant"
+        },
+        {
+          "include": "#embeddedJS"
+        }
+      ]
+    },
+    "constant": {
+      "match": "\\b(?:ALL|CREATE|READ|UPDATE|DELETE|ALLOW|DENY)\\b",
+      "name": "support.type.composer-acl",
+      "patterns": []
+    },
+    "embeddedJS": {
+      "begin": "\\(",
+      "beginCaptures": [
+        {
+          "name": "punctuation.definition.dictionary.begin.composer-acl"
+        }
+      ],
+      "end": "\\)",
+      "endCaptures": [
+        {
+          "name": "punctuation.definition.dictionary.end.composer-acl"
+        }
+      ],
+      "name": "meta.structure.dictionary.composer-acl",
+      "patterns": [
+        {
+          "comment": "Embedded javascript",
+          "include": "source.js"
+        },
+        {
+          "match": "[^\\s\\)]",
+          "name": "invalid.illegal.expected-dictionary-separator.composer-acl"
+        }
+      ]
+    },
+    "comment": {
+      "patterns": [
+        {
+          "name": "comment.block.documentation.js",
+          "begin": "/\\*\\*(?!/)",
+          "end": "\\*/",
+          "captures": {
+            "0": {
+              "name": "punctuation.definition.comment.js"
+            }
+          },
+          "patterns": []
+        },
+        {
+          "name": "comment.block.js",
+          "begin": "/\\*",
+          "end": "\\*/",
+          "captures": {
+            "0": {
+              "name": "punctuation.definition.comment.js"
+            }
+          }
+        },
+        {
+          "begin": "(^[ \\t]+)?(?=//)",
+          "beginCaptures": {
+            "1": {
+              "name": "punctuation.whitespace.comment.leading.js"
+            }
+          },
+          "end": "(?=$)",
+          "patterns": [
+            {
+              "name": "comment.line.double-slash.js",
+              "begin": "//",
+              "beginCaptures": {
+                "0": {
+                  "name": "punctuation.definition.comment.js"
+                }
+              },
+              "end": "(?=$)"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
