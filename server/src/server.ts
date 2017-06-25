@@ -166,12 +166,21 @@ function buildAndSendDiagnosticFromException(err, lineCount: number, sourceURI: 
 	let endLine = lineCount; //default to highlighting to the end of document
 	let endColumn = Number.MAX_VALUE //default to highlighting to the end of the line
 
-	//extract Line and Column info
-	let fullMsg = err.name + ": " + err.message;
-	//connection.console.log(fullMsg); //debug assist
+	//fill in the base description for the excption
+	let fullMsg = err.name + ": "
+
+	//if it's a cto composer exception it will have a short message, but acl ones do not 
+  if (typeof err.getShortMessage === "function") {
+		//Short msg does not have and file and line info which is what we want
+    fullMsg += err.getShortMessage();
+	} else {
+		//May have file and line info
+    fullMsg += err.message;
+	}
+
 	let finalMsg = fullMsg;
 
-	//some messages do not have a line and column
+	//extract Line and Column info if we can, but not all errors have a real line and column
 	if (typeof err.getFileLocation === "function") {
 		//genuine composer exception
 		let location = err.getFileLocation();
