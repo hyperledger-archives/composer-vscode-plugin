@@ -28,7 +28,7 @@
     },
     "rule": {
       "name": "keyword.control.flow.composer-acl",
-      "match": "\\b(rule)\\b(.*)\\b",
+      "match": "\\b(rule)\\s+(\\w+)",
       "captures": {
         "1": {
           "name": "keyword.control.flow.composer-acl"
@@ -37,7 +37,11 @@
           "name": "variable.other.composer-acl"
         }
       },
-      "patterns": []
+      "patterns": [
+        {
+          "include": "#comment"
+        }
+      ]
     },
     "object": {
       "begin": "\\{",
@@ -54,6 +58,9 @@
       ],
       "name": "meta.structure.dictionary.composer-acl",
       "patterns": [
+        {
+          "include": "#comment"
+        },
         {
           "comment": "the composer-acl object key",
           "include": "#objectkey"
@@ -77,6 +84,9 @@
           "name": "meta.structure.dictionary.value.composer-acl",
           "patterns": [
             {
+              "include": "#comment"
+            },
+            {
               "comment": "the composer-acl object value",
               "include": "#objectvalue"
             }
@@ -90,6 +100,9 @@
     },
     "objectkey": {
       "patterns": [
+        {
+          "include": "#comment"
+        },
         {
           "include": "#definition"
         },
@@ -125,6 +138,9 @@
       "name": "storage.type.property.composer-acl",
       "patterns": [
         {
+          "include": "#comment"
+        },
+        {
           "include": "#simpleDefinitions"
         },
         {
@@ -135,12 +151,20 @@
     "simpleDefinitions": {
       "match": "\\b(description|operation|action)\\b",
       "name": "storage.type.property.composer-acl",
-      "patterns": []
+      "patterns": [
+        {
+          "include": "#comment"
+        }
+      ]
     },
     "complexDefinitions": {
       "match": "\\b(participant|resource|condition|transaction)\\b",
       "name": "storage.type.property.composer-acl",
-      "patterns": []
+      "patterns": [
+        {
+          "include": "#comment"
+        }
+      ]
     },
     "objectvalue": {
       "patterns": [
@@ -224,7 +248,7 @@
       ]
     },
     "path": {
-      "match": "(\\w+)|(\\.|#)",
+      "match": "(\\w+)|(\\.|\\*|#)",
       "captures": {
         "1": {
           "name": "variable.other.object.composer-acl"

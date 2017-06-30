@@ -26,7 +26,7 @@ export function activate(context: ExtensionContext) {
   // Options to control the composer validator client
   let clientOptions: LanguageClientOptions = {
     // Register the server for composer documents
-    documentSelector: ['composer','composer-acl'],
+    documentSelector: ['composer','composer-acl','composer-qry'],
     synchronize: {
       // Synchronize the setting section 'Composer' to the server
       configurationSection: 'composer',
@@ -48,7 +48,10 @@ export function activate(context: ExtensionContext) {
       return;
     }
 
-    if ((editor.document.languageId != "composer") && (editor.document.languageId != "composer-acl")) {
+    //make sure it is one of the languages we care about
+    if ((editor.document.languageId != "composer")     && 
+        (editor.document.languageId != "composer-acl") &&
+        (editor.document.languageId != "composer-qry")    ) {
       return;
     }
 
