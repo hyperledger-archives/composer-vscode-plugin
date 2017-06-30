@@ -12,11 +12,14 @@ import {
 	CompletionItem, CompletionItemKind
 } from 'vscode-languageserver';
 
-import { ModelManager, AclManager, AclFile } from 'composer-common';
+import { ModelManager, AclManager, QueryManager, AclFile } from 'composer-common';
 
-//create the two main singleton managers we need to handle all open cto and permissions.acl documents in the workspace.
+//create the three main singleton managers we need to handle all 
+//open *.cto, .qry and permissions.acl documents in the workspace.
+//note that composer currently only supports one query and one acl file at present
 let modelManager = new ModelManager();
 let aclManager = new AclManager(modelManager);
+let queryManager = new QueryManager(modelManager);
 
 // Create a connection for the server. The connection uses Node's IPC as a transport
 let connection: IConnection = createConnection(new IPCMessageReader(process), new IPCMessageWriter(process));
@@ -77,8 +80,8 @@ connection.onDidChangeConfiguration((change) => {
 });
 
 /**
- * Main method driven by the LSP when the user opens or changes a cto or acl file
- * @param {string} textDocument - ".cto" or "permissions.acl" document from the client to validate
+ * Main method driven by the LSP when the user opens or changes a cto, acl or qry file
+ * @param {string} textDocument - ".cto", "permissions.acl" or ".qry" document from the client to validate
  */
 function validateTextDocument(textDocument: TextDocument): void {
 	let langId = textDocument.languageId; //type of file we are processing
@@ -91,6 +94,9 @@ function validateTextDocument(textDocument: TextDocument): void {
 		if (langId == "composer-acl") {
 			//permissions.acl file
 			validateNewAclModelFile(textDocument);
+		} else if (langId == "composer-qry") {
+			//.qry file
+			validateNewQueryModelFile(textDocument);
 		} else {
 			//raw composer file
 			validateCtoModelFile(textDocument);
@@ -99,6 +105,12 @@ function validateTextDocument(textDocument: TextDocument): void {
 			const aclFile = aclManager.getAclFile();
 			if (aclFile != null) {
 				validateExistingAclModelFile(aclFile);
+			}
+
+			//if we have a query file we should revalidate it incase the model changes broke something
+			const queryFile = queryManager.getQueryFile();
+			if (queryFile != null) {
+				validateExistingQueryModelFile(queryFile);
 			}
 		}
 	}
@@ -153,6 +165,38 @@ function validateExistingAclModelFile(aclFile): void {
 }
 
 /**
+ * Validates a qry file that the user has just opened or changed in the workspace.
+ * @param {string} textDocument - new ".qry" file to validate
+ * @private
+ */
+function validateNewQueryModelFile(textDocument: TextDocument): void {
+	try {
+		let txt = textDocument.getText(); //.qry file
+		let queryFile = queryManager.createQueryFile(textDocument.uri, txt);
+		queryFile.lineCount = textDocument.lineCount; //store the count so future errors have access
+		queryManager.setQueryFile(queryFile); //may throw an exception
+		sendDiagnosticSuccess(textDocument.uri); //all OK
+	} catch (err) {
+		buildAndSendDiagnosticFromException(err, textDocument.lineCount, textDocument.uri);
+	}
+}
+
+/**
+ * Validates the existing query file that the user has open in the workspace.
+ * note that currently there can only be one qry file per business network definition at present
+ * @param {string} textDocument - existing ".qry" file to validate
+ * @private
+ */
+function validateExistingQueryModelFile(queryFile): void {
+	try {
+		queryFile.validate(); //may throw an exception
+		sendDiagnosticSuccess(queryFile.getIdentifier()); //all OK
+	} catch (err) {
+		buildAndSendDiagnosticFromException(err, queryFile.lineCount, queryFile.getIdentifier());
+	}
+}
+
+/**
  * Turns the 'err' exception into a diagnostic message that it sends back to the client.
  * @param {excepion} err - current validation exception
  * @param {number} lineCount - number of lines in the invalid document
@@ -169,7 +213,7 @@ function buildAndSendDiagnosticFromException(err, lineCount: number, sourceURI: 
 	//fill in the base description for the excption
 	let fullMsg = err.name + ": "
 
-	//if it's a cto composer exception it will have a short message, but acl ones do not 
+	//if it's a cto composer exception it will have a short message, but acl and qry ones do not 
   if (typeof err.getShortMessage === "function") {
 		//Short msg does not have and file and line info which is what we want
     fullMsg += err.getShortMessage();

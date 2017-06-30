@@ -4,7 +4,7 @@
   "description": "Hyperledger Composer syntax highlighting, autocomplete, snippets & error checking",
   "author": "Hyperledger Composer",
   "license": "Apache-2.0",
-  "version": "0.8.2",
+  "version": "0.9.1",
   "publisher": "HyperledgerComposer",
   "icon": "icon.png",
   "engines": {
@@ -30,14 +30,24 @@
         "editor.quickSuggestions": true,
         "editor.insertSpaces": true,
         "editor.tabSize": 2,
-        "editor.snippetSuggestions": "top"
+        "editor.snippetSuggestions": "top",
+        "editor.detectIndentation": false
       },
       "[composer-acl]": {
         "editor.wordWrap": "on",
         "editor.quickSuggestions": true,
         "editor.insertSpaces": true,
         "editor.tabSize": 2,
-        "editor.snippetSuggestions": "top"
+        "editor.snippetSuggestions": "top",
+        "editor.detectIndentation": false
+      },
+      "[composer-qry]": {
+        "editor.wordWrap": "on",
+        "editor.quickSuggestions": true,
+        "editor.insertSpaces": true,
+        "editor.tabSize": 2,
+        "editor.snippetSuggestions": "top",
+        "editor.detectIndentation": false
       }
     },
     "configuration": {
@@ -82,6 +92,16 @@
           "permissions.acl"
         ],
         "configuration": "./composer-acl.language-configuration.json"
+      },
+      {
+        "id": "composer-qry",
+        "aliases": [
+          "Hyperledger Composer Query"
+        ],
+        "extensions": [
+          ".qry"
+        ],
+        "configuration": "./composer-qry.language-configuration.json"
       }
     ],
     "grammars": [
@@ -94,6 +114,11 @@
         "language": "composer-acl",
         "scopeName": "source.composer.acl",
         "path": "./syntaxes/composer-acl.tmLanguage.json"
+      },
+      {
+        "language": "composer-qry",
+        "scopeName": "source.composer.qry",
+        "path": "./syntaxes/composer-qry.tmLanguage.json"
       }
     ],
     "snippets": [
@@ -104,6 +129,10 @@
       {
         "language": "composer-acl",
         "path": "./snippets/composer-acl.json"
+      },
+      {
+        "language": "composer-qry",
+        "path": "./snippets/composer-qry.json"
       }
     ]
   },
