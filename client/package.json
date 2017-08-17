@@ -4,7 +4,7 @@
   "description": "Hyperledger Composer syntax highlighting, autocomplete, snippets & error checking",
   "author": "Hyperledger Composer",
   "license": "Apache-2.0",
-  "version": "0.9.1",
+  "version": "0.11.3",
   "publisher": "HyperledgerComposer",
   "icon": "icon.png",
   "engines": {
