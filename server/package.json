@@ -1,7 +1,7 @@
 {
   "name": "composer-support-server",
   "description": "HyperledgerComposer server",
-  "version": "0.7.1",
+  "version": "0.11.3",
   "author": "Hyperledger Composer",
   "publisher": "HyperledgerComposer",
   "license": "Apache-2.0",
@@ -13,7 +13,8 @@
     "url": "https://github.com/hyperledger/composer-vscode-plugin"
   },
   "dependencies": {
-    "vscode-languageserver": "^3.0.4",
+    "vscode-languageserver": "3.3.0",
+    "vscode-uri": "1.0.1",
     "composer-common": "latest"
   },
   "devDependencies": {
