@@ -170,7 +170,7 @@ function handleGenerateUml(diagramTitle: string, originatingFileName: string) {
   }
 
   //begin UML definition and global defines
-  parameters.fileWriter.writeLine(0, "@startuml");
+  parameters.fileWriter.writeLine(0, "@startuml composer");
   parameters.fileWriter.writeLine(0, "'** Auto generated content, any changes may be lost **'");
   parameters.fileWriter.writeLine(0, "!define DATE %date[EEE, MMM d, ''yy 'at' HH:mm]%");
   parameters.fileWriter.writeLine(0, "skinparam titleBorderThickness 0.5");

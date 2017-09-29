@@ -3,8 +3,15 @@
   "displayName": "Hyperledger Composer",
   "description": "Hyperledger Composer syntax highlighting, autocomplete, snippets & error checking",
   "author": "Hyperledger Composer",
+  "keywords": [
+    "Hyperledger Composer",
+    "distributed ledger technology",
+    "blockchain",
+    "DLT"
+  ],
+  "homepage": "https://hyperledger.github.io/composer/",
   "license": "Apache-2.0",
-  "version": "0.11.3",
+  "version": "0.13.1",
   "publisher": "HyperledgerComposer",
   "icon": "icon.png",
   "engines": {
