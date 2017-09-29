@@ -15,7 +15,7 @@
   "publisher": "HyperledgerComposer",
   "icon": "icon.png",
   "engines": {
-    "vscode": "^1.12.2"
+    "vscode": "^1.15.1"
   },
   "repository": {
     "type": "git",
@@ -249,7 +249,7 @@
     "@types/mocha": "^2.2.33",
     "@types/node": "^6.0.52",
     "typescript": "^2.1.5",
-    "vscode": "^1.1.4",
+    "vscode": "^1.1.5",
     "vsce": "^1.30.0"
   },
   "dependencies": {
