@@ -62,17 +62,17 @@
       "type": "object",
       "title": "Composer configuration",
       "properties": {
-        "composer.pUML.keepSourceFileOpen": {
+        "composer.UML.keepSourceFileOpen": {
           "type": "boolean",
           "default": true,
           "description": "Keeps open the 'composer.puml' source file after generating the diagram."
         },
-        "composer.pUML.autoShowDiagam": {
+        "composer.UML.autoShowDiagam": {
           "type": "boolean",
           "default": true,
-          "description": "If true, the pUML diagram will automatically be shown. If false, a 'composer.puml' files will be created without showing the diagram."
+          "description": "If true, the PlantUML diagram will automatically be shown. If false, a 'composer.puml' files will be created without showing the diagram."
         },
-        "composer.pUML.includeSystemNamespace": {
+        "composer.UML.includeSystemNamespace": {
           "type": "string",
           "enum": [
             "none",
@@ -80,9 +80,9 @@
             "simple"
           ],
           "default": "simple",
-          "description": "Options to control System Namespace inlusion in pUML diagrams. 'all' will include all System Namespace artifacts. 'none' will remove all System Namespace artifacts. 'simple' keeps the bare minimum of System Namesapce artifacts. The more artifacts kept, the more cluttered the diagram will be."
+          "description": "Options to control System Namespace inlusion in PlantUML diagrams. 'all' will include all System Namespace artifacts. 'none' will remove all System Namespace artifacts. 'simple' keeps the bare minimum of System Namesapce artifacts. The more artifacts kept, the more cluttered the diagram will be."
         },
-        "composer.pUML.diagramStyle": {
+        "composer.UML.diagramStyle": {
           "type": "string",
           "enum": [
             "normal",
@@ -92,6 +92,15 @@
           ],
           "default": "normal",
           "description": "Style of diagram to draw."
+        },
+        "composer.UML.diagramTheme": {
+          "type": "string",
+          "enum": [
+            "yellow",
+            "blue"
+          ],
+          "default": "yellow",
+          "description": "Diagram PlantUML theme. 'yellow' gives the default yellow diagram theme, where as 'blue' uses the newer blue theme"
         },
         "composer.contributor": {
           "type": "boolean",

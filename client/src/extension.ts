@@ -89,7 +89,7 @@ export function activate(context: ExtensionContext) {
 
 /**
  * Client handler for 'composer.generateUML' Command
- * @param {string} docContent - info passed from server - pUML text as a string
+ * @param {string} docContent - info passed from server - UML text as a string
  * @param {string} originatingFileName - name of the cto file command was activated on as passed to server
  *        note that this can be undefined if the command was activated by a keyboard shortcut!
  */
@@ -115,8 +115,9 @@ async function handleGenerateUml(docContent: string, originatingFileName: string
 
   //get config info we need to set flags
   let allConfig = workspace.getConfiguration();
-  let keepSrcFileOpen = allConfig.get('composer.pUML.keepSourceFileOpen');
-  let autoShowDiagam = allConfig.get('composer.pUML.autoShowDiagam');
+  let keepSrcFileOpen = allConfig.get('composer.UML.keepSourceFileOpen');
+  let autoShowDiagam = allConfig.get('composer.UML.autoShowDiagam');
+  let diagramTheme = allConfig.get('composer.UML.diagramTheme');
 
   //if we are to try and show the diagram, we need the plantUML extention installed.
   if (autoShowDiagam) {
@@ -144,20 +145,23 @@ async function handleGenerateUml(docContent: string, originatingFileName: string
         let configPlantUml = allConfig['plantuml'];
         configPlantUml.previewAutoUpdate = false;
         configPlantUml.previewFileType = 'svg';
+        if (diagramTheme === 'blue') {
+          configPlantUml.includes = ['styles/blue'];
+        }
       }
 
       //Note: This looks like it should work but does not. TODO: Raise vscode issue
       //allConfig.update('plantuml.previewAutoUpdate',false,false);
     }
   }
- 
+
   //construct temp file name
   var fileName = os.tmpdir() + path.sep + "composer.puml";
   var umlDocUri = Uri.file(fileName)
 
   //make sure file exists - needed as a workaround to vscode issue #29156 
-  if( ! fs.existsSync(fileName)) {
-    fs.writeFileSync(fileName,"");
+  if (!fs.existsSync(fileName)) {
+    fs.writeFileSync(fileName, "");
   }
 
   //open file - contents will always be replaced later on.
@@ -171,7 +175,7 @@ async function handleGenerateUml(docContent: string, originatingFileName: string
   }
   let textEditor = await window.showTextDocument(document, options);
   return await textEditor.edit(async (editBuilder) => {
-    //edit doc to replace all doc content with new puml syntax
+    //edit doc to replace all doc content with new PlantUML syntax
     var lastLineLength = document.lineAt(document.lineCount - 1).text.length;
     editBuilder.replace(new Range(new Position(0, 0), new Position(textEditor.document.lineCount - 1, lastLineLength)), docContent);
   }).then(async editApplied => {
@@ -183,7 +187,7 @@ async function handleGenerateUml(docContent: string, originatingFileName: string
 
     //save the file whilst it's the active one
     var saved = await document.save();
-    if(!saved) {
+    if (!saved) {
       console.log("Client could not save doc: " + umlDocUri.toString());
     }
 
@@ -199,8 +203,8 @@ async function handleGenerateUml(docContent: string, originatingFileName: string
     if (result !== undefined) {
       //console.log("Client preview returned: " + result); //debug
     }
-    
-    //check for option to close .puml file
+
+    //check for option to close the composer.puml file
     if (!keepSrcFileOpen) {
       //make sure we are closing the correct window, just in case
       if (window.activeTextEditor) {
@@ -222,7 +226,7 @@ async function handleGenerateUml(docContent: string, originatingFileName: string
     }
 
     //reset the correct cto editor as active if we are showing the diagram
-    //otherwise let the omposer.puml file have focus
+    //otherwise let the composer.puml file have focus
     if (autoShowDiagam) {
       //Note that the visibleTextEditors list is the nost accurate as it contains
       //the correct view column. However, we're not always present in this list

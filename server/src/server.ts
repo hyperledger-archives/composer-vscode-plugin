@@ -83,11 +83,12 @@ interface Settings {
 interface ComposerSettings {
   contributor: boolean
   maxNumberOfProblems: number
-  pUML: {
+  UML: {
     keepSourceFileOpen: boolean
     autoShowDiagam: boolean
     includeSystemNamespace: string
     diagramStyle: string
+    diagramTheme: string
   }
 }
 
@@ -144,7 +145,7 @@ connection.onExecuteCommand((params) => {
 
 /**
  * Server processor for 'composer.generateUML' Command
- * @param {string} diagramTitle - pUML diagram title
+ * @param {string} diagramTitle - UML diagram title
  * @param {string} originatingFileName - name of the cto file command was activated on as passed to server
  *        note that this can be undefined if the command was activated by a keyboard shortcut!
  */
@@ -162,7 +163,7 @@ function handleGenerateUml(diagramTitle: string, originatingFileName: string) {
   for (let n = 0; n < modelFiles.length; n++) {
     const modelFile: ModelFile = modelFiles[n];
     //we exclude models from the system namespace by default
-    if (options.pUML.includeSystemNamespace === "all") {
+    if (options.UML.includeSystemNamespace === "all") {
       result = result.concat(modelFile.getAllDeclarations());
     } else if (modelFile.getNamespace() != ModelUtil.getSystemNamespace()) {
       result = result.concat(modelFile.getAllDeclarations());
@@ -173,14 +174,22 @@ function handleGenerateUml(diagramTitle: string, originatingFileName: string) {
   parameters.fileWriter.writeLine(0, "@startuml composer");
   parameters.fileWriter.writeLine(0, "'** Auto generated content, any changes may be lost **'");
   parameters.fileWriter.writeLine(0, "!define DATE %date[EEE, MMM d, ''yy 'at' HH:mm]%");
+  if (options.UML.diagramTheme === 'yellow') {
+    parameters.fileWriter.writeLine(0, "skinparam titleBackgroundColor LightYellow");
+  } else {
+    parameters.fileWriter.writeLine(0, "'AutoInclude") //include the blue style
+    parameters.fileWriter.writeLine(0, "skinparam titleBackgroundColor AliceBlue");
+  }
   parameters.fileWriter.writeLine(0, "skinparam titleBorderThickness 0.5");
   parameters.fileWriter.writeLine(0, "skinparam titleBorderRoundCorner 6");
-  parameters.fileWriter.writeLine(0, "skinparam titleBackgroundColor LightYellow");
-  if (options.pUML.diagramStyle === 'handwritten') {
+  parameters.fileWriter.writeLine(0, "skinparam titleFontColor Black");
+  parameters.fileWriter.writeLine(0, "skinparam titleFontSize 18");
+
+  if (options.UML.diagramStyle === 'handwritten') {
     parameters.fileWriter.writeLine(0, "skinparam handwritten true")
-  } else if (options.pUML.diagramStyle === 'monochrome') {
+  } else if (options.UML.diagramStyle === 'monochrome') {
     parameters.fileWriter.writeLine(0, "skinparam monochrome true");
-  } else if (options.pUML.diagramStyle === 'monochrome-reverse') {
+  } else if (options.UML.diagramStyle === 'monochrome-reverse') {
     parameters.fileWriter.writeLine(0, "skinparam monochrome reverse");
   }
 
@@ -194,7 +203,7 @@ function handleGenerateUml(diagramTitle: string, originatingFileName: string) {
     decl.accept(visitor, parameters);
   });
 
-  if (options.pUML.includeSystemNamespace === "none") {
+  if (options.UML.includeSystemNamespace === "none") {
     //skip system namespace artifacts. Note that we can only hide classes that already exist, 
     //so for now simply search for the relevant string to check for existance. This is
     //not a failsafe solution but should work well enough for now.
