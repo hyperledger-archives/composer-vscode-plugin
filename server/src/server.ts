@@ -42,6 +42,7 @@ let documents: TextDocuments = new TextDocuments();
 // for open, change and close text document events
 documents.listen(connection);
 
+
 // After the server has started the client sends an initialize request. The server receives
 // in the passed params the rootPath of the workspace plus the client capabilities. 
 let workspaceRoot: string;
@@ -70,8 +71,8 @@ connection.onInitialize((params): InitializeResult => {
 
 // The content of a text document has changed. This event is emitted
 // when the text document first opened or when its content has changed.
-documents.onDidChangeContent((change) => {
-  validateTextDocument(change.document);
+documents.onDidChangeContent((doc) => {
+  validateTextDocument(doc.document);
 });
 
 // The settings interface describes the server relevant settings part
@@ -278,16 +279,34 @@ function validateTextDocument(textDocument: TextDocument): void {
  */
 function validateCtoModelFile(textDocument: TextDocument): void {
   try {
+    //hack to workaround circularly dependent documents
+    let currentModels=[]; 
+    documents.all().forEach( (textDocument: TextDocument) => {
+      if (textDocument.languageId == "composer") {
+        let model = new ModelFile(modelManager, textDocument.getText(), textDocument.uri);
+        if (! modelManager.getModelFile(model.getNamespace())) {
+          //only add if not existing
+          currentModels.push(model);
+        }
+      }
+    });
+    //connection.console.log("SERVER addModelFiles: " + currentModels.length); //debug
+    modelManager.addModelFiles(currentModels);
+
+
     let modelContents = textDocument.getText(); //*.cto file
     //add or update, depending on existance. ModelFile and modelManager calls may throw an exception
     let model = new ModelFile(modelManager, modelContents, textDocument.uri);
     if (modelManager.getModelFile(model.getNamespace())) {
+      //connection.console.log("SERVER update model: " + model.getNamespace()); //debug
       modelManager.updateModelFile(model);
     } else {
+      //connection.console.log("SERVER add model: " + model.getNamespace()); //debug
       modelManager.addModelFile(model);
     }
     sendDiagnosticSuccess(textDocument.uri); //all OK
   } catch (err) {
+    //connection.console.log("SERVER model err: " + err.toString()); //debug
     buildAndSendDiagnosticFromException(err, textDocument.lineCount, textDocument.uri);
   }
 }
