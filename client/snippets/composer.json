@@ -20,8 +20,8 @@
 	"Transaction": {
 		"prefix": "transaction",
 		"body": [
-			"transaction ${1:transactionName} identified by ${2:transactionKey} {",
-			"\to String ${2}$0",
+			"transaction ${1:transactionName} {",
+			"\to String ${2:detail}$0",
 			"}"
 		],
 		"description": "Composer Transaction"
@@ -29,8 +29,8 @@
   "Event": {
 		"prefix": "event",
 		"body": [
-			"event ${1:eventName} identified by ${2:eventKey} {",
-			"\to String ${2}$0",
+			"event ${1:eventName} {",
+			"\to String ${2:detail}$0",
 			"}"
 		],
 		"description": "Composer Event"
