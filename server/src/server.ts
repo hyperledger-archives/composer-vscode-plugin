@@ -42,7 +42,6 @@ let documents: TextDocuments = new TextDocuments();
 // for open, change and close text document events
 documents.listen(connection);
 
-
 // After the server has started the client sends an initialize request. The server receives
 // in the passed params the rootPath of the workspace plus the client capabilities. 
 let workspaceRoot: string;
@@ -72,7 +71,17 @@ connection.onInitialize((params): InitializeResult => {
 // The content of a text document has changed. This event is emitted
 // when the text document first opened or when its content has changed.
 documents.onDidChangeContent((doc) => {
+  //connection.console.log("SERVER onDidChangeContent: " + doc.document.uri); //debug
   validateTextDocument(doc.document);
+});
+
+documents.onDidOpen((doc) => {
+  //connection.console.log("SERVER onDidOpen: " + doc.document.uri); //debug
+});
+
+documents.onDidClose((doc) => {
+  //connection.console.log("SERVER onDidClose: " + doc.document.uri); //debug
+  closeTextDocument(doc.document);
 });
 
 // The settings interface describes the server relevant settings part
@@ -236,7 +245,7 @@ function handleGenerateUml(diagramTitle: string, originatingFileName: string) {
 
 /**
  * Main method driven by the LSP when the user opens or changes a cto, acl or qry file
- * @param {string} textDocument - ".cto", "permissions.acl" or ".qry" document from the client to validate
+ * @param {TextDocument} textDocument - ".cto", "permissions.acl" or ".qry" document from the client to validate
  */
 function validateTextDocument(textDocument: TextDocument): void {
   let langId = textDocument.languageId; //type of file we are processing
@@ -268,52 +277,102 @@ function validateTextDocument(textDocument: TextDocument): void {
         validateExistingQueryModelFile(queryFile);
       }
     }
+  } else {
+    //clear any errors on the empty document
+    sendDiagnosticSuccess(textDocument.uri); //all OK
   }
 
 }
 
 /**
  * Validates a cto file that the user has just opened or changed in the workspace.
- * @param {string} textDocument - ".cto" file to validate
+ * @param {TextDocument} textDocument - ".cto" file to validate
  * @private
  */
 function validateCtoModelFile(textDocument: TextDocument): void {
   try {
+    //debug
+    //var allNS = modelManager.getNamespaces();
+    //connection.console.log("SERVER DOC-LEN: " + textDocument.getText().length); //debug
+    //connection.console.log("SERVER ALL-NS: " + allNS.length); //debug
+    //allNS.forEach(ns => {
+      //connection.console.log("SERVER NS: " + ns); //debug
+    //});
+
     //hack to workaround circularly dependent documents
-    let currentModels=[]; 
-    documents.all().forEach( (textDocument: TextDocument) => {
-      if (textDocument.languageId == "composer") {
-        let model = new ModelFile(modelManager, textDocument.getText(), textDocument.uri);
-        if (! modelManager.getModelFile(model.getNamespace())) {
-          //only add if not existing
-          currentModels.push(model);
+    let currentModels = [];
+    documents.all().forEach((doc: TextDocument) => {
+      if (doc.languageId == "composer") {
+        let modelContents = doc.getText(); //*.cto file
+        if (modelContents.length > 0) {
+          //cannot add 0 length documents
+          try {
+            let model: any = new ModelFile(modelManager, modelContents, doc.uri);
+            model.lineCount = doc.lineCount; //store the count so future errors have access
+            if (!modelManager.getModelFile(model.getNamespace())) {
+              //only add if not existing and no error
+              currentModels.push(model);
+            }
+          } catch (err) {
+            //we had an error creating the model - output the error now
+            //connection.console.log("SERVER model err early: " + err.toString() + " " + doc.uri); //debug
+            buildAndSendDiagnosticFromException(err, doc.lineCount, doc.uri);
+          }
         }
       }
     });
-    //connection.console.log("SERVER addModelFiles: " + currentModels.length); //debug
-    modelManager.addModelFiles(currentModels);
 
+    //connection.console.log("SERVER addModelFiles: " + currentModels.length); //debug
+    if (currentModels.length > 0) {
+      //only add if we have files or it forces a validation too early!
+      try {
+        modelManager.addModelFiles(currentModels);
+      } catch (err) {
+        //one of the files had an error validating, but the exception does not tell us which one so we must,
+        //ignore errors adding files here and wait until the user selects the file in error to report it.
+        //connection.console.log("SERVER model err adding: " + err.toString()); //debug
+      }
+    }
 
     let modelContents = textDocument.getText(); //*.cto file
     //add or update, depending on existance. ModelFile and modelManager calls may throw an exception
-    let model = new ModelFile(modelManager, modelContents, textDocument.uri);
-    if (modelManager.getModelFile(model.getNamespace())) {
+    let model: any = new ModelFile(modelManager, modelContents, textDocument.uri);
+    model.lineCount = textDocument.lineCount; //store the count so future errors have access
+    var existingModel = modelManager.getModelFile(model.getNamespace());
+    if (existingModel && existingModel.getName() === textDocument.uri) {
+      //update if we have a file that matches an existing namespace and filename
       //connection.console.log("SERVER update model: " + model.getNamespace()); //debug
       modelManager.updateModelFile(model);
     } else {
+      //Composer does not allow two different files to belong to the same namespace, in which
+      //case addModelFile() will throw for us when we add the second instance.
+      //note, if we get here it will be because the file has an error or it would have been added above.
       //connection.console.log("SERVER add model: " + model.getNamespace()); //debug
       modelManager.addModelFile(model);
     }
-    sendDiagnosticSuccess(textDocument.uri); //all OK
+
+    //finally check valiatation for cross validation for all additions and changes against other open models
+    modelManager.getModelFiles().forEach(model => {
+      try {
+        model.validate();
+        //clear any existing open errors against the file
+        sendDiagnosticSuccess(model.getName()); //the name is the uri
+      } catch (err) {
+        //report any errors against the file
+        buildAndSendDiagnosticFromException(err, model.lineCount, model.getName());
+      }
+    });
+
+    sendDiagnosticSuccess(textDocument.uri); //all OK for current document - probably unnecessary to report it again...
   } catch (err) {
-    //connection.console.log("SERVER model err: " + err.toString()); //debug
+    //connection.console.log("SERVER model err: " + err.toString() + " " + textDocument.uri); //debug
     buildAndSendDiagnosticFromException(err, textDocument.lineCount, textDocument.uri);
   }
 }
 
 /**
  * Validates an acl file that the user has just opened or changed in the workspace.
- * @param {string} textDocument - new "permissions.acl" file to validate
+ * @param {TextDocument} textDocument - new "permissions.acl" file to validate
  * @private
  */
 function validateNewAclModelFile(textDocument: TextDocument): void {
@@ -345,7 +404,7 @@ function validateExistingAclModelFile(aclFile): void {
 
 /**
  * Validates a qry file that the user has just opened or changed in the workspace.
- * @param {string} textDocument - new ".qry" file to validate
+ * @param {TextDocument} textDocument - new ".qry" file to validate
  * @private
  */
 function validateNewQueryModelFile(textDocument: TextDocument): void {
@@ -394,7 +453,7 @@ function buildAndSendDiagnosticFromException(err, lineCount: number, sourceURI: 
 
   //if it's a cto composer exception it will have a short message, but acl and qry ones do not 
   if (typeof err.getShortMessage === "function") {
-    //Short msg does not have and file and line info which is what we want
+    //Short msg does not have any file and line info which is what we want
     fullMsg += err.getShortMessage();
   } else {
     //May have file and line info
@@ -463,6 +522,73 @@ function sendDiagnosticSuccess(sourceURI: string): void {
   // 1: If there has been an exception, this will report the details.
   // 2: If there has NOT been an exception, this will clear any previous exception details (this case).
   connection.sendDiagnostics({ uri: sourceURI, diagnostics });
+}
+
+/**
+ * Main method driven by the LSP when the user closes a cto, acl or qry file
+ * @param {TextDocument} textDocument - ".cto", "permissions.acl" or ".qry" document from the client to close
+ */
+function closeTextDocument(textDocument: TextDocument): void {
+  let langId = textDocument.languageId; //type of file we are processing
+  //note - this is the FULL document text as we can't do incremental yet! 
+  let txt = textDocument.getText();
+
+  //only care about files with data
+  if (txt != null && txt.length > 0) {
+    //different behaviour for each language type
+    if (langId == "composer-acl") {
+      //permissions.acl file
+      //TODO - close acl file
+    } else if (langId == "composer-qry") {
+      //.qry file
+      //TODO - close query file
+    } else {
+      //raw composer .cto file
+      try {
+        //It is possible the model file could have unparsable errors but will 
+        //handle this case another day (requires map of open files)
+        let model: any = new ModelFile(modelManager, txt, textDocument.uri);
+        var existingModel = modelManager.getModelFile(model.getNamespace());
+        if (existingModel && existingModel.getName() === textDocument.uri) {
+          //only delete if we match on namespace and name
+          modelManager.deleteModelFile(model.getNamespace());
+        } else {
+          //clear any existing errors on the closed document, otherwise they are ophaned
+          sendDiagnosticSuccess(textDocument.uri); //all OK
+        }
+
+        //finally check valiatation for cross validation against other open models
+        modelManager.getModelFiles().forEach(currrentModel => {
+          try {
+            currrentModel.validate();
+            //clear any existing open errors against the file
+            sendDiagnosticSuccess(currrentModel.getName()); //the name is the uri
+          } catch (err) {
+            //report any errors against the still open file
+            buildAndSendDiagnosticFromException(err, currrentModel.lineCount, currrentModel.getName());
+          }
+        });
+      } catch (err) {
+        //ignore errors as we are closing the file.
+        //connection.console.log("SERVER close err: " + err.toString() + " " + textDocument.uri); //debug
+      }
+      //if we have an acl file we should revalidate it incase the model changes broke something
+      const aclFile = aclManager.getAclFile();
+      if (aclFile != null) {
+        validateExistingAclModelFile(aclFile);
+      }
+
+      //if we have a query file we should revalidate it incase the model changes broke something
+      const queryFile = queryManager.getQueryFile();
+      if (queryFile != null) {
+        validateExistingQueryModelFile(queryFile);
+      }
+    }
+  } else {
+    //clear any errors on the empty document
+    sendDiagnosticSuccess(textDocument.uri); //all OK
+  }
+
 }
 
 connection.onDidChangeWatchedFiles((change) => {
