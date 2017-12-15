@@ -11,7 +11,7 @@
   ],
   "homepage": "https://hyperledger.github.io/composer/",
   "license": "Apache-2.0",
-  "version": "0.15.1",
+  "version": "0.16.2",
   "publisher": "HyperledgerComposer",
   "icon": "icon.png",
   "engines": {
@@ -247,11 +247,12 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "tsc -p ./",
-    "compile": "tsc -watch -p ./",
+    "compile:client": "tsc -p ./",
+		"watch:client": "tsc -w -p ./",
     "update-vscode": "node ./node_modules/vscode/bin/install",
     "postinstall": "node ./node_modules/vscode/bin/install",
-    "package": "node ./node_modules/vsce/out/vsce package",
+    "package:vsix": "node ./node_modules/vsce/out/vsce package",
+    "prepublish": "tsc -p ./",
     "test": ""
   },
   "devDependencies": {
