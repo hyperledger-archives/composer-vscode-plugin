@@ -3,13 +3,17 @@
 	// List of configurations. Add new configurations or edit existing ones.
 	"configurations": [
 		{
-			"name": "Attach",
+			"name": "Attach to Server",
 			"type": "node",
 			"request": "attach",
+			"protocol": "inspector",
 			"port": 6009,
 			"sourceMaps": true,
-			"outFiles": [ "${workspaceRoot}/../client/server/**/*.js" ],
-			"protocol": "legacy"
+			"outFiles": [
+				"${workspaceRoot}/client/server/**/*.js"
+			],
+			"preLaunchTask": "watch:server"
+			//"trace": "all"
 		}
 	]
 }

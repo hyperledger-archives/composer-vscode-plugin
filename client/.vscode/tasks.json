@@ -5,31 +5,47 @@
 // ${fileDirname}: the current opened file's dirname
 // ${fileExtname}: the current opened file's extension
 // ${cwd}: the current working directory of the spawned process
-
 // A task runner that calls a custom npm script that compiles the extension.
 {
 	"version": "2.0.0",
-
-	// we want to run npm
-	"command": "npm",
-
-	// we run the custom script "compile" as defined in package.json
-	"args": ["run", "compile", "--loglevel", "silent"],
-
-	// The tsc compiler is started in watching mode
-	"isBackground": true,
-
-	// use the standard tsc in watch mode problem matcher to find compile problems in the output.
-	"problemMatcher": "$tsc-watch",
-
-	// show the output window only if unrecognized errors occur.
-	"presentation": {
-		"echo": true,
-		"reveal": "silent",
-		"focus": false,
-		"panel": "shared"
-	},
-
-	// the command is a shell script
-	"type": "shell"
+	"tasks": [
+		{
+			"label": "compile:client",
+			"type": "npm",
+			"script": "compile:client",
+			"group": "build",
+			"presentation": {
+				"panel": "dedicated",
+				"reveal": "never"
+			},
+			"problemMatcher": [
+				"$tsc"
+			]
+		},
+		{
+			"label": "watch:client",
+			"type": "npm",
+			"script": "watch:client",
+			"isBackground": true,
+			"group": "build",
+			"presentation": {
+				"panel": "dedicated",
+				"reveal": "never"
+			},
+			"problemMatcher": [
+				"$tsc-watch"
+			]
+		},
+		{
+			"label": "package:vsix",
+			"group": "build",
+			"type": "npm",
+			"script": "package:vsix",
+			"presentation": {
+				"panel": "dedicated",
+				"reveal": "never"
+			},
+			"problemMatcher": []
+		}
+	]
 }

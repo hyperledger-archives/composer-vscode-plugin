@@ -1,15 +1,43 @@
 {
 	"version": "2.0.0",
-	"command": "npm",
-	"args": ["run", "watch"],
-	"isBackground": true,
-	"problemMatcher": "$tsc-watch",
-	"presentation": {
-		"echo": true,
-		"reveal": "silent",
-		"focus": false,
-		"panel": "shared"
-	},
-	"type": "shell"
-	
+	"tasks": [
+		{
+			"label": "compile:server",
+			"type": "npm",
+			"script": "compile:server",
+			"group": "build",
+			"presentation": {
+				"panel": "dedicated",
+				"reveal": "never"
+			},
+			"problemMatcher": [
+				"$tsc"
+			]
+		},
+		{
+			"label": "watch:server",
+			"type": "npm",
+			"script": "watch:server",
+			"isBackground": true,
+			"group": "build",
+			"presentation": {
+				"panel": "dedicated",
+				"reveal": "never"
+			},
+			"problemMatcher": [
+				"$tsc-watch"
+			]
+		},
+		{
+			"label": "install:server",
+			"group": "build",
+			"type": "npm",
+			"script": "install:server",
+			"presentation": {
+				"panel": "dedicated",
+				"reveal": "never"
+			},
+			"problemMatcher": []
+		}
+	]
 }
