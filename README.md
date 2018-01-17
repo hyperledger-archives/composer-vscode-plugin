@@ -13,10 +13,10 @@ Generate the installable VSIX file:
 git clone https://github.com/hyperledger/composer-vscode-plugin.git
 cd composer-vscode-plugin/server
 npm install
-npm run compile
+npm run compile:server
 cd ../client
 npm install
-npm run package
+npm run package:vsix
 ```
 
 1. Launch VSCode
