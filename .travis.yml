@@ -1,9 +1,16 @@
+sudo: false
+os: 
+  - osx
+  - linux
+
 language: node_js
 node_js:
-    - '6'
+    - '8'
 dist: trusty
+before_install: |
+      ./.travis/before_install.sh
 install: |
-        ./.travis/install.sh
+      ./.travis/install.sh
 script: |
       ./.travis/script.sh
 deploy:

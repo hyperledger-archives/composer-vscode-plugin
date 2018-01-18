@@ -248,12 +248,12 @@
   },
   "scripts": {
     "compile:client": "tsc -p ./",
-		"watch:client": "tsc -w -p ./",
+    "watch:client": "tsc -w -p ./",
     "update-vscode": "node ./node_modules/vscode/bin/install",
     "postinstall": "node ./node_modules/vscode/bin/install",
     "package:vsix": "node ./node_modules/vsce/out/vsce package",
     "prepublish": "tsc -p ./",
-    "test": ""
+    "test": "node ./node_modules/vscode/bin/test"
   },
   "devDependencies": {
     "@types/mocha": "^2.2.33",
