@@ -1,13 +1,17 @@
-// 
-// Note: This example test is leveraging the Mocha test framework.
-// Please refer to their documentation on https://mochajs.org/ for help.
-//
-
-// The module 'assert' provides assertion methods from node
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import * as assert from 'assert';
-
-// You can import and use all API from the 'vscode' module
-// as well as import your extension to test it
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as myExtension from '../src/extension';
@@ -15,33 +19,31 @@ import { ExtensionContext, workspace, Uri } from 'vscode';
 import { error } from 'util';
 
 // Defines a Mocha test suite to group tests of similar kind together
-suite("Extension Tests", () => {
+suite('Extension Tests', () => {
+  const rootPath = path.dirname(__dirname);
 
+  // open a cto document should return the expected document id and line count
+  test('activate should return a cto document when open a cto file', () => {
 
-	// test validation cto
-	test("activate", () => {
-		
-		// let context: ExtensionContext;
-		// let serverModule = context.asAbsolutePath(path.join('../server', 'server.js'));
+    // const rootPath = path.dirname(__dirname);
+    const uri = vscode.Uri.file(path.join(rootPath, '../test/data/valid/cto/test.cto'));
 
-		let uri = vscode.Uri.file(path.join("/Users/Fenglian/dev/git/composer-vscode-plugin/client/test/data", 'test.cto'));
-		
-		// let uri = vscode.Uri.file(path.join(vscode.workspace.rootPath || '', './data/test.cto'));
-		console.log('uri' + uri);
-		workspace.openTextDocument(uri).then((document) =>{
+    workspace.openTextDocument(uri).then((document) => {
+    const text = document.getText();
+    assert.equal(document.languageId, 'composer');
+    assert.ok(document.lineCount === 41);
 
-			let text = document.getText();
-			console.log('text = ' + text);
+    });
+  });
 
-		}, (err) =>{
-			assert.ok(false, `error in OpenTextDocument ${err}`);
-            return Promise.reject(err);
-		});
+  test('activate should return an acl file when open an acl file', () => {
 
-		// let serverOptions: ServerOptions = {
-		// 	run: { module: serverModule, transport: TransportKind.ipc }
-		// }
-		console.log('is activate called?');
+   const uri = vscode.Uri.file(path.join(rootPath, '../test/data/valid/acl/permissions.acl'));
 
-	});
+   workspace.openTextDocument(uri).then((document) => {
+    const text = document.getText();
+    assert.equal(document.languageId, 'composer-acl');
+    assert.ok(document.lineCount === 34);
+    });
+  });
 });

@@ -1,0 +1,34 @@
+/**
+ * Access Control List for the bond data
+ */
+rule Issuer {
+    description: "Allow full access to the issuer of a bond"
+    participant(i): "org.acme.bond.Issuer"
+    operation: ALL
+    resource(a): "org.acme.bond.BondAsset"
+    condition: (a.bond.issuer.memberId === i.memberId)
+    action: ALLOW
+}
+
+rule Default {
+    description: "Allow read access"
+    participant: "org.acme.bond.*"
+    operation: ALL
+    resource: "org.acme.bond.*"
+    action: ALLOW
+}
+
+rule AllAccess1 {
+  description: "Description of the Basic ACL rule"
+  participant: "org.hyperledger.composer.system.Participant"
+  operation: ALL
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
+}
+rule AllAccess2{
+  description: "Description of the Basic ACL rule"
+  participant: "org.hyperledger.composer.system.Participant"
+  operation: ALL
+  resource: "org.acme.bond.**"
+  action: ALLOW
+}
