@@ -3,6 +3,24 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
+			"type": "node",
+			"request": "launch",
+			"name": "Mocha Tests",
+			"program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+			"args": [
+				"-u",
+				"tdd",
+				"--no-timeouts",
+				"--compilers",
+				"ts:ts-node/register",
+				"--colors",
+				"${workspaceFolder}/test/**/*.test.ts"
+			],
+			"cwd": "${workspaceFolder}",
+			"protocol": "inspector",
+			"internalConsoleOptions": "openOnSessionStart"
+		},
+		{
 			"name": "Launch Client Extension",
 			"type": "extensionHost",
 			"request": "launch",

@@ -15,7 +15,7 @@
   "publisher": "HyperledgerComposer",
   "icon": "icon.png",
   "engines": {
-    "vscode": "^1.15.1"
+    "vscode": "^1.19.2"
   },
   "repository": {
     "type": "git",
@@ -248,21 +248,26 @@
   },
   "scripts": {
     "compile:client": "tsc -p ./",
-		"watch:client": "tsc -w -p ./",
+    "watch:client": "tsc -w -p ./",
     "update-vscode": "node ./node_modules/vscode/bin/install",
     "postinstall": "node ./node_modules/vscode/bin/install",
     "package:vsix": "node ./node_modules/vsce/out/vsce package",
     "prepublish": "tsc -p ./",
-    "test": ""
+    "test": "node ./node_modules/vscode/bin/test"
   },
   "devDependencies": {
+    "@types/chai": "^3.5.2",
     "@types/mocha": "^2.2.33",
     "@types/node": "^6.0.52",
-    "typescript": "^2.1.5",
-    "vscode": "^1.1.5",
-    "vsce": "^1.30.0"
+    "chai": "^4.1.2",
+    "mocha": "^5.0.0",
+    "nyc": "^11.4.1",
+    "ts-node": "^4.1.0",
+    "typescript": "^2.6.2",
+    "vsce": "^1.30.0",
+    "vscode": "^1.1.5"
   },
   "dependencies": {
-    "vscode-languageclient": "^3.3.0"
+    "vscode-languageclient": "^3.5.0"
   }
 }
