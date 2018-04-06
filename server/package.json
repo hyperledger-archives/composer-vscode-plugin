@@ -1,7 +1,7 @@
 {
   "name": "composer-support-server",
   "description": "HyperledgerComposer server",
-  "version": "0.19.0",
+  "version": "0.19.1",
   "author": "Hyperledger Composer",
   "publisher": "HyperledgerComposer",
   "license": "Apache-2.0",
