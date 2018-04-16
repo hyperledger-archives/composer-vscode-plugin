@@ -30,21 +30,21 @@ suite('Extension Tests', () => {
     const uri = vscode.Uri.file(path.join(rootPath, '../test/data/valid/cto/test.cto'));
 
     workspace.openTextDocument(uri).then((document) => {
-    const text = document.getText();
-    assert.equal(document.languageId, 'composer');
-    assert.ok(document.lineCount === 41);
+      const text = document.getText();
+      assert.equal(document.languageId, 'composer');
+      assert.ok(document.lineCount === 41);
 
     });
   });
 
   test('activate should return an acl file when open an acl file', () => {
 
-   const uri = vscode.Uri.file(path.join(rootPath, '../test/data/valid/acl/permissions.acl'));
+    const uri = vscode.Uri.file(path.join(rootPath, '../test/data/valid/acl/permissions.acl'));
 
-   workspace.openTextDocument(uri).then((document) => {
-    const text = document.getText();
-    assert.equal(document.languageId, 'composer-acl');
-    assert.ok(document.lineCount === 34);
+    workspace.openTextDocument(uri).then((document) => {
+      const text = document.getText();
+      assert.equal(document.languageId, 'composer-acl');
+      assert.ok(document.lineCount === 48);
     });
   });
 });

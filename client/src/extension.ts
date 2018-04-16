@@ -34,7 +34,7 @@ export function activate(context: ExtensionContext) {
 
   // The server is implemented in node
   const serverModule = context.asAbsolutePath(path.join('server/src', 'server.js'));
-  let outputChannel: OutputChannel = window.createOutputChannel('Hyperledger Composer');
+  const outputChannel: OutputChannel = window.createOutputChannel('Hyperledger Composer');
 
   // The debug options for the server
   const debugOptions = { execArgv: ['--nolazy', '--inspect=6009'] };

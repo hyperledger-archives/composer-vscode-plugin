@@ -46,6 +46,21 @@
 				"reveal": "never"
 			},
 			"problemMatcher": []
+		},
+		{
+			"type": "npm",
+			"script": "lint",
+			"problemMatcher": [
+				"$tsc"
+			]
+		},
+		{
+			"type": "npm",
+			"script": "lint",
+			"path": "server/",
+			"problemMatcher": [
+				"$tsc"
+			]
 		}
 	]
 }

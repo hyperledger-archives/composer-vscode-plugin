@@ -13,3 +13,6 @@ out
 server
 node_modules
 *.vsix
+.nyc_output
+.vscode-test
+coverage
