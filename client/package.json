@@ -309,7 +309,9 @@
     "exact_paths": [
       "node_modules",
       "out",
-      "server"
+      "server",
+      ".vscode-test",
+      "coverage"
     ],
     "file_type_method": "EXCLUDE",
     "file_types": [

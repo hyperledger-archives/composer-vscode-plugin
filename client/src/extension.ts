@@ -18,13 +18,13 @@ import * as fs from 'fs';
 import * as os from 'os';
 import { spawn } from 'child_process';
 
-import { workspace, commands, Disposable, ExtensionContext, window, WorkspaceConfiguration, TextDocumentChangeEvent, TextDocumentContentChangeEvent, Range, Position, Uri, TextDocumentShowOptions, ViewColumn, extensions } from 'vscode';
+import { workspace, commands, Disposable, ExtensionContext, OutputChannel, window, WorkspaceConfiguration, TextDocumentChangeEvent, TextDocumentContentChangeEvent, Range, Position, Uri, TextDocumentShowOptions, ViewColumn, extensions } from 'vscode';
 import { LanguageClient, LanguageClientOptions, SettingMonitor, ServerOptions, TransportKind, NotificationType, Code2ProtocolConverter, DidChangeTextDocumentParams } from 'vscode-languageclient';
 
 let client: LanguageClient = null;
 
 export function activate(context: ExtensionContext) {
-  // console.log('CLIENT activate!!!');
+   // console.log('CLIENT activate!!!');
 
   const disposable3 = workspace.onDidChangeConfiguration((params) => {
     // console.log(`CLIENT onDidChangeConfiguration ${JSON.stringify(params)}`); //debug
@@ -33,7 +33,8 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(disposable3);
 
   // The server is implemented in node
-  const serverModule = context.asAbsolutePath(path.join('server', 'server.js'));
+  const serverModule = context.asAbsolutePath(path.join('server/src', 'server.js'));
+  const outputChannel: OutputChannel = window.createOutputChannel('Hyperledger Composer');
 
   // The debug options for the server
   const debugOptions = { execArgv: ['--nolazy', '--inspect=6009'] };
@@ -54,7 +55,8 @@ export function activate(context: ExtensionContext) {
       configurationSection: 'composer',
       // Notify the server about file changes to '.clientrc files contain in the workspace
       // fileEvents: workspace.createFileSystemWatcher('**/.clientrc')
-    }
+    },
+    outputChannel: outputChannel
   };
 
   // Create the language client and start the client.
