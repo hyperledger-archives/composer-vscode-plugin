@@ -24,7 +24,7 @@ import { LanguageClient, LanguageClientOptions, SettingMonitor, ServerOptions, T
 let client: LanguageClient = null;
 
 export function activate(context: ExtensionContext) {
-   // console.log('CLIENT activate!!!');
+  // console.log('CLIENT activate!!!');
 
   const disposable3 = workspace.onDidChangeConfiguration((params) => {
     // console.log(`CLIENT onDidChangeConfiguration ${JSON.stringify(params)}`); //debug
@@ -154,10 +154,10 @@ async function handleGenerateUml(docContent: string, originatingFileName: string
         // force plantUML to turn off autoUpdate as it causes problems when other files are changed
         // also set fileType to 'svg' as the default 'png' drops the RHS of wide diagrams.
 
-        // Note these changes make persisted changes to the users settings. 
+        // Note these changes make persisted changes to the users settings.
         // TODO - is there a temporary way instead?
-        allConfig.update('plantuml.previewAutoUpdate',false, ConfigurationTarget.Global);
-        allConfig.update('plantuml.previewFileType','svg', ConfigurationTarget.Global);
+        allConfig.update('plantuml.previewAutoUpdate', false, ConfigurationTarget.Global);
+        allConfig.update('plantuml.previewFileType', 'svg', ConfigurationTarget.Global);
 
         if (diagramTheme === 'blue') {
           // currently, the include of styles is broken in plantuml plugin - issue #110
