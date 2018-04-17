@@ -24,7 +24,7 @@ import { LanguageClient, LanguageClientOptions, SettingMonitor, ServerOptions, T
 let client: LanguageClient = null;
 
 export function activate(context: ExtensionContext) {
-  // console.log('CLIENT activate!!!');
+   // console.log('CLIENT activate!!!');
 
   const disposable3 = workspace.onDidChangeConfiguration((params) => {
     // console.log(`CLIENT onDidChangeConfiguration ${JSON.stringify(params)}`); //debug
