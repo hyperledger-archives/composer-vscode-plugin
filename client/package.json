@@ -272,7 +272,7 @@
     "tslint": "^5.9.1",
     "tslint-loader": "^3.3.0",
     "typescript": "^2.6.2",
-    "vsce": "^1.30.0",
+    "vsce": "^1.39.0",
     "vscode": "^1.1.5"
   },
   "dependencies": {

@@ -18,7 +18,7 @@ import * as fs from 'fs';
 import * as os from 'os';
 import { spawn } from 'child_process';
 
-import { workspace, commands, Disposable, ExtensionContext, OutputChannel, window, WorkspaceConfiguration, TextDocumentChangeEvent, TextDocumentContentChangeEvent, Range, Position, Uri, TextDocumentShowOptions, ViewColumn, extensions } from 'vscode';
+import { workspace, commands, ConfigurationTarget, Disposable, ExtensionContext, OutputChannel, window, WorkspaceConfiguration, TextDocumentChangeEvent, TextDocumentContentChangeEvent, Range, Position, Uri, TextDocumentShowOptions, ViewColumn, extensions } from 'vscode';
 import { LanguageClient, LanguageClientOptions, SettingMonitor, ServerOptions, TransportKind, NotificationType, Code2ProtocolConverter, DidChangeTextDocumentParams } from 'vscode-languageclient';
 
 let client: LanguageClient = null;
@@ -151,18 +151,21 @@ async function handleGenerateUml(docContent: string, originatingFileName: string
       const fileType = allConfig.get('plantuml.previewFileType');
       const autoUpdate = allConfig.get('plantuml.previewAutoUpdate');
       if (autoUpdate || (fileType !== 'svg')) {
-        // force plantUML to turn off autoUpdate as it causes problems when other files sre changed
+        // force plantUML to turn off autoUpdate as it causes problems when other files are changed
         // also set fileType to 'svg' as the default 'png' drops the RHS of wide diagrams.
-        const configPlantUml = allConfig['plantuml'];
-        configPlantUml.previewAutoUpdate = false;
-        configPlantUml.previewFileType = 'svg';
+
+        // Note these changes make persisted changes to the users settings. 
+        // TODO - is there a temporary way instead?
+        allConfig.update('plantuml.previewAutoUpdate',false, ConfigurationTarget.Global);
+        allConfig.update('plantuml.previewFileType','svg', ConfigurationTarget.Global);
+
         if (diagramTheme === 'blue') {
-          configPlantUml.includes = ['styles/blue'];
+          // currently, the include of styles is broken in plantuml plugin - issue #110
+          // so this is patched in server.ts and this code is not needed until the issue is fixed
+          // allConfig.update('plantuml.includes',['styles/blue'], ConfigurationTarget.Global);
         }
       }
 
-      // Note: This looks like it should work but does not. TODO: Raise vscode issue
-      // allConfig.update('plantuml.previewAutoUpdate',false,false);
     }
   }
 

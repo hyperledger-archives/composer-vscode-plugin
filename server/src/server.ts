@@ -193,16 +193,46 @@ function handleGenerateUml(diagramTitle: string, originatingFileName: string) {
   parameters.fileWriter.writeLine(0, '@startuml composer');
   parameters.fileWriter.writeLine(0, "'** Auto generated content, any changes may be lost **'");
   parameters.fileWriter.writeLine(0, "!define DATE %date[EEE, MMM d, ''yy 'at' HH:mm]%");
+
   if (options.UML.diagramTheme === 'yellow') {
-    parameters.fileWriter.writeLine(0, 'skinparam titleBackgroundColor LightYellow');
+    parameters.fileWriter.writeLine(0, "skinparam class {")
+    parameters.fileWriter.writeLine(0, "  Font {");
+    parameters.fileWriter.writeLine(0, "    Color Black");
+    parameters.fileWriter.writeLine(0, "    Style Plain");
+    parameters.fileWriter.writeLine(0, "    Size 16");
+    parameters.fileWriter.writeLine(0, "  }");
+    parameters.fileWriter.writeLine(0, "}");
+
+    parameters.fileWriter.writeLine(0, "skinparam title {");
+    parameters.fileWriter.writeLine(0, "  BackgroundColor LightYellow");
   } else {
-    parameters.fileWriter.writeLine(0, "'AutoInclude"); // include the blue style
-    parameters.fileWriter.writeLine(0, 'skinparam titleBackgroundColor AliceBlue');
+    // AutoInclude is currently seems broken in PlantUml - see their issue #110 so working around
+    // parameters.fileWriter.writeLine(0, "'AutoInclude"); // include the blue style
+    // patch the output to make the diagram look like the include worked!
+    parameters.fileWriter.writeLine(0, "skinparam class {")
+    parameters.fileWriter.writeLine(0, "  BackgroundColor AliceBlue");
+    parameters.fileWriter.writeLine(0, "  BorderColor SteelBlue");
+    parameters.fileWriter.writeLine(0, "  BorderColor SteelBlue");
+    parameters.fileWriter.writeLine(0, "  ArrowColor SteelBlue");
+    parameters.fileWriter.writeLine(0, "  Font {");
+    parameters.fileWriter.writeLine(0, "    Color Black");
+    parameters.fileWriter.writeLine(0, "    Style Plain");
+    parameters.fileWriter.writeLine(0, "    Size 16");
+    parameters.fileWriter.writeLine(0, "  }");
+    parameters.fileWriter.writeLine(0, "}");
+
+    parameters.fileWriter.writeLine(0, "skinparam title {");
+    parameters.fileWriter.writeLine(0, "  BackgroundColor AliceBlue");
+    parameters.fileWriter.writeLine(0, "  BorderColor SteelBlue");
   }
-  parameters.fileWriter.writeLine(0, 'skinparam titleBorderThickness 0.5');
-  parameters.fileWriter.writeLine(0, 'skinparam titleBorderRoundCorner 6');
-  parameters.fileWriter.writeLine(0, 'skinparam titleFontColor Black');
-  parameters.fileWriter.writeLine(0, 'skinparam titleFontSize 18');
+
+  // these title attributes are used for both yellow and blue styles
+  parameters.fileWriter.writeLine(0, "  BorderThickness 0.5");
+  parameters.fileWriter.writeLine(0, "  BorderRoundCorner 6");
+  parameters.fileWriter.writeLine(0, "  FontColor Black");
+  parameters.fileWriter.writeLine(0, "  FontSize 18");
+  parameters.fileWriter.writeLine(0, "}");
+
 
   if (options.UML.diagramStyle === 'handwritten') {
     parameters.fileWriter.writeLine(0, 'skinparam handwritten true');
