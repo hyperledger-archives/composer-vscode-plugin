@@ -21,13 +21,13 @@ import {
   CompletionItem, CompletionItemKind
 } from 'vscode-languageserver';
 
- // import { GenericNotificationHandler } from 'vscode-jsonrpc';
+// import { GenericNotificationHandler } from 'vscode-jsonrpc';
 import Uri from 'vscode-uri';
 import { ModelManager, AclManager, QueryManager, ModelFile, ModelUtil, AclFile, Logger, FileWriter, Writer } from 'composer-common';
 import PlantUMLVisitor = require('composer-common/lib/codegen/fromcto/plantuml/plantumlvisitor');
 
- // First, before calling any composer code,
- // turn off all composer logging for now until the base fixes errors if log folder cannot be created!
+// First, before calling any composer code,
+// turn off all composer logging for now until the base fixes errors if log folder cannot be created!
 Logger.setFunctionalLogger({
   log: () => {
     // none, zip, nada!
@@ -193,16 +193,45 @@ function handleGenerateUml(diagramTitle: string, originatingFileName: string) {
   parameters.fileWriter.writeLine(0, '@startuml composer');
   parameters.fileWriter.writeLine(0, "'** Auto generated content, any changes may be lost **'");
   parameters.fileWriter.writeLine(0, "!define DATE %date[EEE, MMM d, ''yy 'at' HH:mm]%");
+
   if (options.UML.diagramTheme === 'yellow') {
-    parameters.fileWriter.writeLine(0, 'skinparam titleBackgroundColor LightYellow');
+    parameters.fileWriter.writeLine(0, 'skinparam class {');
+    parameters.fileWriter.writeLine(0, '  Font {');
+    parameters.fileWriter.writeLine(0, '    Color Black');
+    parameters.fileWriter.writeLine(0, '    Style Plain');
+    parameters.fileWriter.writeLine(0, '    Size 16');
+    parameters.fileWriter.writeLine(0, '  }');
+    parameters.fileWriter.writeLine(0, '}');
+
+    parameters.fileWriter.writeLine(0, 'skinparam title {');
+    parameters.fileWriter.writeLine(0, '  BackgroundColor LightYellow');
   } else {
-    parameters.fileWriter.writeLine(0, "'AutoInclude"); // include the blue style
-    parameters.fileWriter.writeLine(0, 'skinparam titleBackgroundColor AliceBlue');
+    // AutoInclude is currently seems broken in PlantUml - see their issue #110 so working around
+    // parameters.fileWriter.writeLine(0, "'AutoInclude"); // include the blue style
+    // patch the output to make the diagram look like the include worked!
+    parameters.fileWriter.writeLine(0, 'skinparam class {');
+    parameters.fileWriter.writeLine(0, '  BackgroundColor AliceBlue');
+    parameters.fileWriter.writeLine(0, '  BorderColor SteelBlue');
+    parameters.fileWriter.writeLine(0, '  BorderColor SteelBlue');
+    parameters.fileWriter.writeLine(0, '  ArrowColor SteelBlue');
+    parameters.fileWriter.writeLine(0, '  Font {');
+    parameters.fileWriter.writeLine(0, '    Color Black');
+    parameters.fileWriter.writeLine(0, '    Style Plain');
+    parameters.fileWriter.writeLine(0, '    Size 16');
+    parameters.fileWriter.writeLine(0, '  }');
+    parameters.fileWriter.writeLine(0, '}');
+
+    parameters.fileWriter.writeLine(0, 'skinparam title {');
+    parameters.fileWriter.writeLine(0, '  BackgroundColor AliceBlue');
+    parameters.fileWriter.writeLine(0, '  BorderColor SteelBlue');
   }
-  parameters.fileWriter.writeLine(0, 'skinparam titleBorderThickness 0.5');
-  parameters.fileWriter.writeLine(0, 'skinparam titleBorderRoundCorner 6');
-  parameters.fileWriter.writeLine(0, 'skinparam titleFontColor Black');
-  parameters.fileWriter.writeLine(0, 'skinparam titleFontSize 18');
+
+  // these title attributes are used for both yellow and blue styles
+  parameters.fileWriter.writeLine(0, '  BorderThickness 0.5');
+  parameters.fileWriter.writeLine(0, '  BorderRoundCorner 6');
+  parameters.fileWriter.writeLine(0, '  FontColor Black');
+  parameters.fileWriter.writeLine(0, '  FontSize 18');
+  parameters.fileWriter.writeLine(0, '}');
 
   if (options.UML.diagramStyle === 'handwritten') {
     parameters.fileWriter.writeLine(0, 'skinparam handwritten true');
@@ -305,7 +334,7 @@ function validateCtoModelFile(textDocument: TextDocument): void {
     // connection.console.log("SERVER DOC-LEN: " + textDocument.getText().length); //debug
     // connection.console.log("SERVER ALL-NS: " + allNS.length); //debug
     // allNS.forEach(ns => {
-      // connection.console.log("SERVER NS: " + ns); //debug
+    // connection.console.log("SERVER NS: " + ns); //debug
     // });
 
     // hack to workaround circularly dependent documents
@@ -361,7 +390,7 @@ function validateCtoModelFile(textDocument: TextDocument): void {
     }
 
     // finally check valiatation for cross validation for all additions and changes against other open models
-    modelManager.getModelFiles().forEach( (model) => {
+    modelManager.getModelFiles().forEach((model) => {
       try {
         model.validate();
         // clear any existing open errors against the file
@@ -638,16 +667,16 @@ connection.onCompletion((textDocumentPosition: TextDocumentPositionParams): Comp
 connection.onCompletionResolve((item: CompletionItem): CompletionItem => {
   if (item.data === 1) {
     item.detail = 'asset details',
-    item.documentation = 'Add an asset.';
+      item.documentation = 'Add an asset.';
   } else if (item.data === 2) {
     item.detail = 'participant details',
-    item.documentation = 'Add an participant';
+      item.documentation = 'Add an participant';
   } else if (item.data === 3) {
     item.detail = 'transaction details',
-    item.documentation = 'Add an transaction';
+      item.documentation = 'Add an transaction';
   } else if (item.data === 4) {
     item.detail = 'enum details',
-    item.documentation = 'Add an enum';
+      item.documentation = 'Add an enum';
   }
   return item;
 });

@@ -20,3 +20,6 @@ src/**
 .eslintignore
 tsconfig.json
 vsc-extension-quickstart.md
+.nyc_output/**
+.vscode-test/**
+coverage/**
