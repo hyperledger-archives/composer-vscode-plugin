@@ -315,7 +315,6 @@
     ],
     "file_type_method": "EXCLUDE",
     "file_types": [
-      ".md",
       ".txt",
       ".vsix"
     ],
@@ -332,6 +331,9 @@
         "eachLine": {
           "prepend": "# "
         }
+      },
+      "md": {
+        "file": "../markdown-license.txt"
       }
     }
   }
