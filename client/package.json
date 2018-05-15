@@ -11,7 +11,7 @@
   ],
   "homepage": "https://hyperledger.github.io/composer/",
   "license": "Apache-2.0",
-  "version": "0.19.1",
+  "version": "0.19.5",
   "publisher": "HyperledgerComposer",
   "icon": "icon.png",
   "engines": {
@@ -22,7 +22,7 @@
     "url": "https://github.com/hyperledger/composer-vscode-plugin"
   },
   "categories": [
-    "Languages",
+    "Programming Languages",
     "Snippets",
     "Other"
   ],
