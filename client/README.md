@@ -14,7 +14,7 @@ This extension now supports generating PlantUML diagrams from .cto files. This
 requires that the [PlantUML](https://marketplace.visualstudio.com/items?itemName=jebbs.plantuml) extension is installed and configured before the 
 diagram can be displayed. The PlantUML extension requires that [Java](https://java.com/en/download/) and [Graphviz](http://www.graphviz.org/Download..php) are also installed and in the path.
 
-This extension is currently in beta so please raise any problems you find as an 
+This extension is currently under development so please raise any problems you find as an 
 [issue](https://github.com/hyperledger/composer-vscode-plugin/issues).
 
 ## License <a name="license"></a>

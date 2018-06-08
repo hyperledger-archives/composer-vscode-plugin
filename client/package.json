@@ -11,7 +11,7 @@
   ],
   "homepage": "https://hyperledger.github.io/composer/",
   "license": "Apache-2.0",
-  "version": "0.19.5",
+  "version": "0.19.8",
   "publisher": "HyperledgerComposer",
   "icon": "icon.png",
   "engines": {
@@ -265,7 +265,7 @@
     "@types/node": "^6.0.52",
     "angular-tslint-rules": "^1.2.1",
     "chai": "^4.1.2",
-    "license-check-and-add": "~2.3.0",
+    "license-check-and-add": "2.3.1",
     "mocha": "^5.0.0",
     "nyc": "^11.4.1",
     "ts-node": "^4.1.0",
