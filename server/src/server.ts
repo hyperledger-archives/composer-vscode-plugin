@@ -327,7 +327,7 @@ function validateTextDocument(textDocument: TextDocument): void {
  * @param {TextDocument} textDocument - ".cto" file to validate
  * @private
  */
-function validateCtoModelFile(textDocument: TextDocument): void {
+async function validateCtoModelFile(textDocument: TextDocument): Promise<void> {
   try {
     // debug
     // var allNS = modelManager.getNamespaces();
@@ -364,7 +364,7 @@ function validateCtoModelFile(textDocument: TextDocument): void {
     if (currentModels.length > 0) {
       // only add if we have files or it forces a validation too early!
       try {
-        modelManager.addModelFiles(currentModels);
+        modelManager.addModelFiles(currentModels, null, true);
       } catch (err) {
         // one of the files had an error validating, but the exception does not tell us which one so we must,
         // ignore errors adding files here and wait until the user selects the file in error to report it.
@@ -380,14 +380,17 @@ function validateCtoModelFile(textDocument: TextDocument): void {
     if (existingModel && existingModel.getName() === textDocument.uri) {
       // update if we have a file that matches an existing namespace and filename
       // connection.console.log("SERVER update model: " + model.getNamespace()); //debug
-      modelManager.updateModelFile(aModel);
+      modelManager.updateModelFile(aModel, null, true);
     } else {
       // Composer does not allow two different files to belong to the same namespace, in which
       // case addModelFile() will throw for us when we add the second instance.
       // note, if we get here it will be because the file has an error or it would have been added above.
-      // connection.console.log("SERVER add model: " + model.getNamespace()); //debug
-      modelManager.addModelFile(aModel);
+      // connection.console.log("SERVER add model: " + existingModel.getNamespace()); //debug
+      modelManager.addModelFile(aModel, null, true);
     }
+
+    // Download imported external models
+    await modelManager.updateExternalModels();
 
     // finally check valiatation for cross validation for all additions and changes against other open models
     modelManager.getModelFiles().forEach((model) => {
@@ -400,8 +403,8 @@ function validateCtoModelFile(textDocument: TextDocument): void {
         buildAndSendDiagnosticFromException(err, model.lineCount, model.getName());
       }
     });
-
     sendDiagnosticSuccess(textDocument.uri); // all OK for current document - probably unnecessary to report it again...
+
   } catch (err) {
     // connection.console.log("SERVER model err: " + err.toString() + " " + textDocument.uri); //debug
     buildAndSendDiagnosticFromException(err, textDocument.lineCount, textDocument.uri);
