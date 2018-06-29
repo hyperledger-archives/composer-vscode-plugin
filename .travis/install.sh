@@ -17,8 +17,5 @@
 set -ev
 set -o pipefail
 
-cd ./server
-npm install
-
-cd ../client
+cd ./client
 npm install

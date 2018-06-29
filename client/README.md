@@ -1,5 +1,3 @@
-# Hyperledger Composer Extension for VSCode 
-
 Validate Composer models that define the structure of your business network 
 in terms of Assets, Participants and Transactions.
 

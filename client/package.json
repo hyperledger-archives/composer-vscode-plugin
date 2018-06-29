@@ -1,273 +1,122 @@
 {
-  "name": "composer-support-client",
-  "displayName": "Hyperledger Composer",
-  "description": "Hyperledger Composer syntax highlighting, autocomplete, snippets & error checking",
-  "author": "Hyperledger Composer",
+  "name": "blockchain-network-explorer",
+  "displayName": "Blockchain Network Explorer",
+  "description": "Explorer your Blockchain networks",
+  "author": "IBM",
   "keywords": [
-    "Hyperledger Composer",
     "distributed ledger technology",
     "blockchain",
     "DLT"
   ],
   "homepage": "https://hyperledger.github.io/composer/",
   "license": "Apache-2.0",
-  "version": "0.19.5",
-  "publisher": "HyperledgerComposer",
+  "version": "0.19.8",
+  "publisher": "IBM",
   "icon": "icon.png",
   "engines": {
     "vscode": "^1.19.2"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/hyperledger/composer-vscode-plugin"
+    "url": "https://github.com/IBM-Blockchain/fabric-vscode-plugin"
   },
   "categories": [
     "Programming Languages",
-    "Snippets",
     "Other"
   ],
   "activationEvents": [
-    "onLanguage:composer",
-    "onCommand:composer.generateUML"
+    "onView:blockchainExplorer",
+    "onCommand:blockchainExplorer.refreshEntry",
+    "onCommand:blockchainExplorer.connectEntry",
+    "onCommand:blockchainExplorer.addConfigEntry",
+    "onCommand:blockchainExplorer.testEntry"
   ],
   "main": "./out/src/extension",
   "contributes": {
-    "configurationDefaults": {
-      "[composer]": {
-        "editor.wordWrap": "on",
-        "editor.quickSuggestions": true,
-        "editor.insertSpaces": true,
-        "editor.tabSize": 2,
-        "editor.snippetSuggestions": "top",
-        "editor.detectIndentation": false
-      },
-      "[composer-acl]": {
-        "editor.wordWrap": "on",
-        "editor.quickSuggestions": true,
-        "editor.insertSpaces": true,
-        "editor.tabSize": 2,
-        "editor.snippetSuggestions": "top",
-        "editor.detectIndentation": false
-      },
-      "[composer-qry]": {
-        "editor.wordWrap": "on",
-        "editor.quickSuggestions": true,
-        "editor.insertSpaces": true,
-        "editor.tabSize": 2,
-        "editor.snippetSuggestions": "top",
-        "editor.detectIndentation": false
-      }
-    },
-    "configuration": {
-      "type": "object",
-      "title": "Composer configuration",
-      "properties": {
-        "composer.UML.keepSourceFileOpen": {
-          "type": "boolean",
-          "default": true,
-          "description": "Keeps open the 'composer.puml' source file after generating the diagram."
-        },
-        "composer.UML.autoShowDiagam": {
-          "type": "boolean",
-          "default": true,
-          "description": "If true, the PlantUML diagram will automatically be shown. If false, a 'composer.puml' files will be created without showing the diagram."
-        },
-        "composer.UML.includeSystemNamespace": {
-          "type": "string",
-          "enum": [
-            "none",
-            "all",
-            "simple"
-          ],
-          "default": "simple",
-          "description": "Options to control System Namespace inlusion in PlantUML diagrams. 'all' will include all System Namespace artifacts. 'none' will remove all System Namespace artifacts. 'simple' keeps the bare minimum of System Namesapce artifacts. The more artifacts kept, the more cluttered the diagram will be."
-        },
-        "composer.UML.diagramStyle": {
-          "type": "string",
-          "enum": [
-            "normal",
-            "handwritten",
-            "monochrome",
-            "monochrome-reverse"
-          ],
-          "default": "normal",
-          "description": "Style of diagram to draw."
-        },
-        "composer.UML.diagramTheme": {
-          "type": "string",
-          "enum": [
-            "yellow",
-            "blue"
-          ],
-          "default": "yellow",
-          "description": "Diagram PlantUML theme. 'yellow' gives the default yellow diagram theme, where as 'blue' uses the newer blue theme"
-        },
-        "composer.contributor": {
-          "type": "boolean",
-          "default": false,
-          "description": "Set to true if you are a contributor to the Hyperledger Composer project. This will then allow you to edit the 'org.hyperledger.composer.system' namespace."
-        },
-        "composer.maxNumberOfProblems": {
-          "type": "number",
-          "default": 10,
-          "description": "Controls the maximum number of problems produced by the server."
-        },
-        "composer.trace.server": {
-          "type": "string",
-          "enum": [
-            "off",
-            "on",
-            "messages",
-            "verbose"
-          ],
-          "default": "off",
-          "description": "Traces the communication between VSCode and the languageServer service."
-        }
-      }
-    },
-    "languages": [
-      {
-        "id": "composer",
-        "aliases": [
-          "Hyperledger Composer",
-          "Composer"
-        ],
-        "extensions": [
-          ".cto"
-        ],
-        "configuration": "./composer.language-configuration.json"
-      },
-      {
-        "id": "composer-acl",
-        "aliases": [
-          "Hyperledger Composer ACL"
-        ],
-        "extensions": [
-          "permissions.acl"
-        ],
-        "configuration": "./composer-acl.language-configuration.json"
-      },
-      {
-        "id": "composer-qry",
-        "aliases": [
-          "Hyperledger Composer Query"
-        ],
-        "extensions": [
-          ".qry"
-        ],
-        "configuration": "./composer-qry.language-configuration.json"
-      }
-    ],
-    "grammars": [
-      {
-        "language": "composer",
-        "scopeName": "source.composer",
-        "path": "./syntaxes/composer.tmLanguage.json"
-      },
-      {
-        "language": "composer-acl",
-        "scopeName": "source.composer.acl",
-        "path": "./syntaxes/composer-acl.tmLanguage.json"
-      },
-      {
-        "language": "composer-qry",
-        "scopeName": "source.composer.qry",
-        "path": "./syntaxes/composer-qry.tmLanguage.json"
-      }
-    ],
-    "snippets": [
-      {
-        "language": "composer",
-        "path": "./snippets/composer.json"
-      },
-      {
-        "language": "composer-acl",
-        "path": "./snippets/composer-acl.json"
-      },
-      {
-        "language": "composer-qry",
-        "path": "./snippets/composer-qry.json"
-      }
-    ],
-    "menus": {
-      "editor/context": [
+    "views": {
+      "explorer": [
         {
-          "command": "composer.generateUML",
-          "when": "editorLangId == composer",
-          "group": "composer"
-        }
-      ],
-      "editor/title": [
-        {
-          "command": "composer.generateUML",
-          "when": "editorLangId == composer",
-          "group": "navigation"
-        }
-      ],
-      "editor/title/context": [
-        {
-          "command": "composer.generateUML",
-          "when": "resourceLangId == composer",
-          "group": "composer"
-        }
-      ],
-      "explorer/context": [
-        {
-          "command": "composer.generateUML",
-          "when": "resourceLangId == composer",
-          "group": "composer"
-        }
-      ],
-      "commandPalette": [
-        {
-          "command": "composer.generateUML",
-          "when": "editorLangId == composer"
+          "id": "blockchainExplorer",
+          "name": "Blockchain Explorer"
         }
       ]
     },
-    "commands": [
-      {
-        "command": "composer.generateUML",
-        "title": "Generate UML",
-        "group": "composer",
-        "category": "composer",
-        "icon": {
-          "dark": "./media/conga.png",
-          "light": "./media/conga.png"
+    "configuration": {
+      "type": "object",
+      "title": "Blockchain configuration",
+      "properties": {
+        "fabric.connections": {
+          "type": "array",
+          "default": [],
+          "description": "Configurations for connecting to a Blockchain network"
         }
       }
-    ],
-    "keybindings": [
+    },
+    "commands": [
       {
-        "command": "composer.generateUML",
-        "key": "ctrl+shift+u",
-        "mac": "cmd+shift+u",
-        "when": "editorTextFocus && editorLangId == composer"
+        "command": "blockchainExplorer.refreshEntry",
+        "title": "Refresh",
+        "icon": {
+          "light": "resources/light/refresh.svg",
+          "dark": "resources/dark/refresh.svg"
+        }
+      },
+      {
+        "command": "blockchainExplorer.connectEntry",
+        "title": "Connect"
+      },
+      {
+        "command": "blockchainExplorer.addConfigEntry",
+        "title": "Add Config"
+      },
+      {
+        "command": "blockchainExplorer.testEntry",
+        "title": "Test"
       }
-    ]
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "blockchainExplorer.refreshEntry",
+          "when": "view == blockchainExplorer",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "blockchainExplorer.testEntry",
+          "when": "view == blockchainExplorer && viewItem == blockchain-peer-item"
+        }
+      ]
+    }
   },
   "scripts": {
-    "compile:client": "tsc -p ./",
-    "watch:client": "tsc -w -p ./",
-    "update-vscode": "node ./node_modules/vscode/bin/install",
-    "licchk": "license-check-and-add",
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
     "postinstall": "node ./node_modules/vscode/bin/install",
-    "package:vsix": "node ./node_modules/vsce/out/vsce package",
-    "prepublish": "tsc -p ./",
     "pretest": "npm run lint & npm run licchk",
-    "test": "nyc node ./node_modules/vscode/bin/test --compilers ts:ts-node/register ./test/*.test.ts",
+    "test": "npm run compile && node ./node_modules/vscode/bin/test",
+    "posttest": "node ./node_modules/.bin/istanbul check-coverage",
+    "licchk": "license-check-and-add",
     "tslint": "tslint",
-    "lint": "npm run tslint 'src/**/*.ts' 'test/extension.test.ts'"
+    "lint": "npm run tslint 'src/**/*.ts' 'test/**/*.test.ts'"
   },
   "devDependencies": {
     "@types/chai": "^3.5.2",
+    "@types/glob": "^5.0.35",
     "@types/mocha": "^2.2.33",
     "@types/node": "^6.0.52",
     "angular-tslint-rules": "^1.2.1",
     "chai": "^4.1.2",
-    "license-check-and-add": "~2.3.0",
+    "decache": "^4.4.0",
+    "electron": "^1.7.12",
+    "electron-rebuild": "^1.7.3",
+    "glob": "^7.1.2",
+    "istanbul": "^0.4.5",
+    "license-check-and-add": "2.3.6",
     "mocha": "^5.0.0",
-    "nyc": "^11.4.1",
+    "remap-istanbul": "^0.11.1",
     "ts-node": "^4.1.0",
     "tslint": "^5.9.1",
     "tslint-loader": "^3.3.0",
@@ -276,31 +125,10 @@
     "vscode": "^1.1.5"
   },
   "dependencies": {
+    "fabric-client": "1.1.2",
+    "fs-extra": "^6.0.1",
+    "mocha": "^5.2.0",
     "vscode-languageclient": "^3.5.0"
-  },
-  "nyc": {
-    "include": [
-      "src/**/*.ts",
-      "test/data"
-    ],
-    "extension": [
-      ".ts"
-    ],
-    "exclude": [
-      "out/**",
-      "server/**",
-      "coverage/**"
-    ],
-    "reporter": [
-      "text-summary",
-      "html"
-    ],
-    "all": true,
-    "check-coverage": true,
-    "statements": 0,
-    "branches": 0,
-    "functions": 0,
-    "lines": 0
   },
   "license-check-and-add-config": {
     "folder": ".",
@@ -309,16 +137,18 @@
     "exact_paths": [
       "node_modules",
       "out",
-      "server",
       ".vscode-test",
-      "coverage"
+      "coverage",
+      "resources"
     ],
     "file_type_method": "EXCLUDE",
     "file_types": [
       ".txt",
-      ".vsix"
+      ".vsix",
+      ".yml"
     ],
     "insert_license": false,
+    "clear_license": false,
     "license_formats": {
       "ts|acl|cto|js|qry": {
         "prepend": "/*",

@@ -10,41 +10,32 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-
-import * as assert from 'assert';
+*/
 import * as vscode from 'vscode';
-import * as path from 'path';
-import * as myExtension from '../src/extension';
-import { ExtensionContext, workspace, Uri } from 'vscode';
-import { error } from 'util';
+
+import * as chai from 'chai';
+
+const should = chai.should();
 
 // Defines a Mocha test suite to group tests of similar kind together
 suite('Extension Tests', () => {
-  const rootPath = path.dirname(__dirname);
 
-  // open a cto document should return the expected document id and line count
-  test('activate should return a cto document when open a cto file', () => {
+    // Defines a Mocha unit test
+    test('Check all the commands are registered', async () => {
 
-    // const rootPath = path.dirname(__dirname);
-    const uri = vscode.Uri.file(path.join(rootPath, '../test/data/valid/cto/test.cto'));
+        // execute a command to force the extension activation
+        await vscode.commands.executeCommand('blockchainExplorer.refreshEntry');
 
-    workspace.openTextDocument(uri).then((document) => {
-      const text = document.getText();
-      assert.equal(document.languageId, 'composer');
-      assert.ok(document.lineCount === 41);
+        const allCommands = await vscode.commands.getCommands();
 
+        const blockchainCommands = allCommands.filter((command) => {
+            return command.startsWith('blockchain');
+        });
+
+        blockchainCommands.should.deep.equal([
+            'blockchainExplorer.refreshEntry',
+            'blockchainExplorer.connectEntry',
+            'blockchainExplorer.addConfigEntry',
+            'blockchainExplorer.testEntry']);
     });
-  });
-
-  test('activate should return an acl file when open an acl file', () => {
-
-    const uri = vscode.Uri.file(path.join(rootPath, '../test/data/valid/acl/permissions.acl'));
-
-    workspace.openTextDocument(uri).then((document) => {
-      const text = document.getText();
-      assert.equal(document.languageId, 'composer-acl');
-      assert.ok(document.lineCount === 48);
-    });
-  });
 });
